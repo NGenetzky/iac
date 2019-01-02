@@ -1,2 +1,4 @@
 ---
 - src: robertdebock.bootstrap
+- src: https://github.com/NGenetzky/ansible-role-editor-vim
+  name: ngenetzky.editor-vim

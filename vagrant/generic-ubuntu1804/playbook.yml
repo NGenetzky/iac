@@ -10,3 +10,9 @@
   tasks:
     - name: test connection
       ping:
+- name: User setup
+  hosts: all
+  # become: true
+
+  roles:
+    - ngenetzky.editor-vim
