@@ -1,0 +1,8 @@
+---
+- hosts: default
+  become: yes
+  pre_tasks:
+  - name: Update apt cache
+    apt: update_cache=yes
+  tasks:
+  - import_tasks: ../../tasks/shell-base.yml
