@@ -1,0 +1,12 @@
+---
+# Could consider following role as alternative:
+# https://github.com/pppontusw/ansible-role-linux-desktop
+
+- name: Install kde desktop environment
+  apt: pkg={{ item }} state=installed
+  with_items:
+    # - kde-plasma-desktop
+    - kde-standard
+    # - kde-full
+  tags:
+    - desktop-kde
