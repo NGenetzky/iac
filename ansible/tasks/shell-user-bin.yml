@@ -1,0 +1,10 @@
+---
+- name: Has Directory (~/bin)
+  file:
+    path: "~/bin/"
+    state: directory
+- name: ~/bin/git-open
+  get_url:
+    url: https://raw.githubusercontent.com/paulirish/git-open/96c80ffe802dc7c93a21f3c815540393ba0d0b86/git-open
+    dest: ~/bin/git-open
+    checksum: md5:37369af78e843179dd1999d80d290cb1

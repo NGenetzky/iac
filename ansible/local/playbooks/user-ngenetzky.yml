@@ -4,3 +4,4 @@
   pre_tasks:
   tasks:
   - import_tasks: ../../tasks/github-ngenetzky.yml
+  - import_tasks: ../../tasks/shell-user-bin.yml
