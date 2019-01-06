@@ -1,2 +1,12 @@
 ---
+- src: geerlingguy.ansible
+- src: geerlingguy.docker
+- src: geerlingguy.git
+- src: geerlingguy.nodejs
+- src: geerlingguy.pip
+- src: robertdebock.buildtools
+- src: robertdebock.openssh
+# - src: robertdebock.go
+# - src: geerlingguy.samba
+# - src: geerlingguy.nfs
 
