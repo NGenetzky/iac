@@ -6,3 +6,20 @@
     apt: update_cache=yes
   tasks:
   - import_tasks: ../../tasks/shell-base.yml
+
+  roles:
+  - role: robertdebock.buildtools
+  - role: geerlingguy.pip
+  - role: geerlingguy.nodejs
+    nodejs_npm_global_packages: []
+
+  - role: geerlingguy.ansible
+    ansible_install_method: pip
+    ansible_install_version_pip: "2.7.0"
+  - role: geerlingguy.docker
+    docker_users: ['vagrant']
+  - role: robertdebock.openssh
+  - role: geerlingguy.git
+  # - role: geerlingguy.samba
+  # - role: geerlingguy.nfs
+  # - role: robertdebock.go
