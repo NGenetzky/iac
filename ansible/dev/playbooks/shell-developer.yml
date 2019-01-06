@@ -6,6 +6,7 @@
     apt: update_cache=yes
   tasks:
   - import_tasks: ../../tasks/shell-base.yml
+  - import_tasks: ../../tasks/shell-vagrant.yml
 
   roles:
   - role: robertdebock.buildtools

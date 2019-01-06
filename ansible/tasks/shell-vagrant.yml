@@ -1,0 +1,28 @@
+---
+- name: Install dependencies for vagrant-libvirt
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - bridge-utils
+    - dnsmasq-base
+    - ebtables
+    - libvirt-bin
+    - libvirt-dev
+    - libxml2-dev
+    - libxslt-dev
+    - qemu
+    - qemu-kvm
+    - ruby-dev
+    - ubuntu-vm-builder
+    - zlib1g-dev
+  tags:
+    - shell_vagrant
+
+- name: Install dependencies for vagrant-libvirt
+  apt: pkg={{ item }} state=build-dep
+  with_items:
+    - vagrant
+    - ruby-libvirt
+  tags:
+    - shell_vagrant
+# vagrant plugin install vagrant-libvirt # TODO: Do in a ansiblized way.
+
