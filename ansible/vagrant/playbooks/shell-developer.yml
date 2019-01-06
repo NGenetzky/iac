@@ -10,7 +10,10 @@
   roles:
   - role: robertdebock.buildtools
   - role: geerlingguy.pip
+    pip_install_packages: []
+    pip_package: python-pip
   - role: geerlingguy.nodejs
+    nodejs_version: "10.x"
     nodejs_npm_global_packages: []
 
   - role: geerlingguy.ansible
