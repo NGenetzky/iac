@@ -9,25 +9,26 @@
     url: https://github.com/NGenetzky.keys
     dest: ~/git/ngenetzky/.github.ngenetzky.keys
     checksum: md5:e5273998bb40b6aedee9bccfb6e5b7f4.
-- name: Clone or update all repositories
-  git:
-    repo: ssh://git@github.com/NGenetzky/{{ item }}.git
-    dest: "~/git/ngenetzky/{{ item }}"
-  with_items:
-    # - dev-shell
-    # - docker-data-crow
-    # - documents
-    # - dotvim
-    # - git-annex-adapter
-    # - meta-genet
-    # - particle-projects
-    - ansible-role-editor-vim
-    - dotfiles
-    - dotfiles-holman
-    - dotphiles
-    - hugo-academic-kickstart
-    - hugo-resume
-    - iac
-    - jatdb
-    - meta-ngenetzky
-    - shlib
+# - name: Clone or update all repositories
+#   git:
+#     repo: ssh://git@github.com/NGenetzky/{{ item }}.git
+#     dest: "~/srv/git/github.com/ngenetzky/{{ item }}.git"
+#     bare: true
+#   with_items:
+#     - dev-shell
+#     - docker-data-crow
+#     - documents
+#     - dotvim
+#     - git-annex-adapter
+#     - meta-genet
+#     - particle-projects
+#     - ansible-role-editor-vim
+#     - dotfiles
+#     - dotfiles-holman
+#     - dotphiles
+#     - hugo-academic-kickstart
+#     - hugo-resume
+#     - iac
+#     - jatdb
+#     - meta-ngenetzky
+#     - shlib
