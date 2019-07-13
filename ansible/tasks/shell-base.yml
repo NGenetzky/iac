@@ -3,18 +3,19 @@
 # - https://github.com/jorgearma1982/ansible-my-kubuntu-desktop/blob/f0192e68f37aa9bd68a9cfbc342c8ac5f2ea2825/roles/desktop-kit/tasks/main.yml
 
 - name: Install base shell tools
-  apt: pkg={{ item }} state=installed
-  with_items:
-    - build-essential
-    - ca-certificates
-    - cmake
-    - ctags
-    - curl
-    - git
-    - make
-    - man
-    - python
-    - tmux
-    - vim
+  apt:
+    state: present
+    pkg:
+      - build-essential
+      - ca-certificates
+      - cmake
+      - ctags
+      - curl
+      - git
+      - make
+      - man
+      - python
+      - tmux
+      - vim
   tags:
     - shell_base
