@@ -5,6 +5,7 @@
 - src: geerlingguy.nodejs
 - src: geerlingguy.pip
 - src: robertdebock.buildtools
+- src: robertdebock.bootstrap
 - src: robertdebock.openssh
 # - src: robertdebock.go
 # - src: geerlingguy.samba
