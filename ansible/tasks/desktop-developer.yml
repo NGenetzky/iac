@@ -17,10 +17,10 @@
   apt:
     state: present
     pkg:
-      - libvirt-bin
       - qemu-kvm
       - virt-manager
       - virt-viewer
+      # - libvirt-bin # TODO: Remove only if Ubuntu 19.04
       # - ssh-askpass
   tags:
     - desktop_virt
