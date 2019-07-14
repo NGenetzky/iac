@@ -1,9 +1,14 @@
 ---
+- name: editor-vim
+  src: https://github.com/NGenetzky/ansible-role-editor-vim.git
+  version: b337b0712be0f268237adc2414f441f99210368d
+
 - src: geerlingguy.ansible
 - src: geerlingguy.docker
 - src: geerlingguy.git
 - src: geerlingguy.nodejs
 - src: geerlingguy.pip
+
 - src: robertdebock.buildtools
 - src: robertdebock.bootstrap
 - src: robertdebock.openssh
