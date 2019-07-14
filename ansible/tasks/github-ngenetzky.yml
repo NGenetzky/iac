@@ -8,7 +8,7 @@
   get_url:
     url: https://github.com/NGenetzky.keys
     dest: ~/git/ngenetzky/.github.ngenetzky.keys
-    checksum: md5:e5273998bb40b6aedee9bccfb6e5b7f4.
+    checksum: md5:a74c2500bdd0de9b14f88ba30d37a298.
 # - name: Clone or update all repositories
 #   git:
 #     repo: ssh://git@github.com/NGenetzky/{{ item }}.git
