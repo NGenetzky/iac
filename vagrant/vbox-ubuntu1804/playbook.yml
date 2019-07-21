@@ -1,0 +1,12 @@
+---
+- name: Bootstrap ansible
+  hosts: all
+  gather_facts: false
+  become: true
+
+  roles:
+    - robertdebock.bootstrap
+
+  tasks:
+    - name: test connection
+      ping:
