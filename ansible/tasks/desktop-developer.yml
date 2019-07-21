@@ -3,53 +3,57 @@
 # - https://github.com/jorgearma1982/ansible-my-kubuntu-desktop/blob/f0192e68f37aa9bd68a9cfbc342c8ac5f2ea2825/roles/desktop-kit/tasks/main.yml
 
 - name: Install remote desktop management
-  apt: pkg={{ item }} state=installed
-  with_items:
-    # - krdc
-    - rdesktop
-    - remmina
-    - xvnc4viewer
+  apt:
+    state: present
+    pkg:
+      - rdesktop
+      - remmina
+      - xvnc4viewer
+      # - krdc
   tags:
     - desktop_rdm
 
 - name: Install virtualization tools
-  apt: pkg={{ item }} state=installed
-  with_items:
-    - libvirt-bin
-    - qemu-kvm
-    # - ssh-askpass
-    - virt-manager
-    - virt-viewer
+  apt:
+    state: present
+    pkg:
+      - qemu-kvm
+      - virt-manager
+      - virt-viewer
+      # - libvirt-bin # TODO: Remove only if Ubuntu 19.04
+      # - ssh-askpass
   tags:
     - desktop_virt
 
 - name: Install AV tools
-  apt: pkg={{ item }} state=installed
-  with_items:
-   # - amarok
-   # - clementine
-   # - easytag
-   # - k3b
-   # - k3b-i18n
-   # - lame
-   # - mencoder
-   - mplayer
-   - vlc
+  apt:
+    state: present
+    pkg:
+      - mplayer
+      - vlc
+      # - amarok
+      # - clementine
+      # - easytag
+      # - k3b
+      # - k3b-i18n
+      # - lame
+      # - mencoder
   tags:
     - desktop_av
 
 - name: Install image editors
-  apt: pkg={{ item }} state=installed
-  with_items:
-    # - aspell-es
-    # - dia
-    - gimp
-    # - kcalc
-    # - kolourpaint4
-    # - shutter
-    # - ttf-liberation
-    # - ttf-mscorefonts-installer
-    # - xchm
-    # - xpdf
+  apt:
+    state: present
+    pkg:
+      - gimp
+      # - aspell-es
+      # - dia
+      # - kcalc
+      # - kolourpaint4
+      # - shutter
+      # - ttf-liberation
+      # - ttf-mscorefonts-installer
+      # - xchm
+      # - xpdf
   tags:
     - desktop_image_editors
