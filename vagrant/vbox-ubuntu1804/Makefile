@@ -13,7 +13,5 @@ requirements.yml:
 	ansible-galaxy install -r "requirements.yml"
 up:
 	vagrant up
-ping:
-	ansible -m ping all
 provision:
 	vagrant provision
