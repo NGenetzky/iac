@@ -40,3 +40,12 @@ RUN \
     && rm -rf '/usr/local/src/geeknote'
 
 ENTRYPOINT ["geeknote"]
+
+# Create non-root user
+ARG USER_ID=1000
+ARG USER_NAME='user'
+RUN groupadd --gid "${USER_ID}" "${USER_NAME}" \
+    && useradd --uid "${USER_ID}" --gid "${USER_ID}" -m "${USER_NAME}"
+
+USER "${USER_NAME}"
+WORKDIR "/home/${USER_NAME}"
