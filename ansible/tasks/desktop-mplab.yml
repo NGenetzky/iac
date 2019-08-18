@@ -1,0 +1,26 @@
+---
+
+- name: Install debian packages
+  apt:
+    state: present
+    pkg:
+      - gcc
+  tags:
+    - desktop_mplab
+
+- name: MPLABX - Download installer
+  get_url:
+    url: http://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.10-linux-installer.tar
+    dest: /tmp/MPLABX-linux-installer.tar
+    checksum: md5:d8015db4f50b91244f67d1af7c312cf7.
+  tags: desktop_mplab
+
+- name: MPLABX - Execute installer
+  shell: /tmp/MPLABX-linux-installer.tar
+  tags: desktop_mplab
+
+- name: MPLABX - Remove installer
+  file:
+    path: /tmp/MPLABX-linux-installer.tar
+    state: absent
+  tags: desktop_mplab

@@ -8,3 +8,4 @@
   # - import_tasks: ../../tasks/desktop-kde.yml
   - import_tasks: ../../tasks/desktop-developer.yml
   - import_tasks: ../../tasks/shell-base.yml
+  - import_tasks: ../../tasks/desktop-mplab.yml

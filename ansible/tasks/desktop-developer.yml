@@ -57,3 +57,9 @@
       # - xpdf
   tags:
     - desktop_image_editors
+
+- name: Install snaps
+  snap:
+    name:
+      - code
+
