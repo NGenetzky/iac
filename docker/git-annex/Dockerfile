@@ -41,3 +41,20 @@ RUN  \
 #
 ################################################################################
 
+################################################################################
+# git-annex-adapter
+#
+
+RUN \
+    # fetch
+    git clone git://github.com/alpernebbi/git-annex-adapter.git '/usr/local/src/git-annex-adapter' \
+    && cd '/usr/local/src/git-annex-adapter' \
+    && git checkout -b 'build' 'v0.2.1' \
+    # compile + install
+    && python setup.py install \
+    # clean
+    && rm -rf '/usr/local/src/git-annex-adapter'
+
+#
+################################################################################
+
