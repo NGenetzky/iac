@@ -78,4 +78,5 @@ RUN \
     && chown "${USER_MAIN_ID}:${USER_MAIN_ID}" \
         "/home/${USER_MAIN_NAME}/.ssh/authorized_keys"
 
+EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
