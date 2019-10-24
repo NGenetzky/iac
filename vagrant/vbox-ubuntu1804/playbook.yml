@@ -1,0 +1,23 @@
+---
+- name: Bootstrap ansible
+  hosts: all
+  gather_facts: false
+  become: true
+
+  roles:
+    - robertdebock.bootstrap
+
+  tasks:
+    - name: test connection
+      ping:
+
+- name: Provision system with ansible
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install Packages
+      apt:
+        state: present
+        pkg:
+          - ubuntu-desktop
