@@ -37,7 +37,13 @@ FROM base-0 as base-1
 ARG USER_MAIN_ID=1000
 ARG USER_MAIN_NAME='user'
 ARG USER_MAIN_SHELL='/usr/bin/zsh'
-RUN groupadd --gid "${USER_MAIN_ID}" "${USER_MAIN_NAME}" \
+ARG USER_MAIN_REF='origin/ngenetzky/novo'
+
+RUN rm -r '/etc/skel/' \
+    && git clone 'https://github.com/NGenetzky/home.git' '/etc/skel/' \
+    #
+    # Add user after we configure /etc/skel
+    && groupadd --gid "${USER_MAIN_ID}" "${USER_MAIN_NAME}" \
     && useradd --shell "${USER_MAIN_SHELL}" --uid "${USER_MAIN_ID}" --gid "${USER_MAIN_ID}" -m "${USER_MAIN_NAME}" \
     #
     # [Optional] Add sudo support
@@ -46,4 +52,8 @@ RUN groupadd --gid "${USER_MAIN_ID}" "${USER_MAIN_NAME}" \
 
 USER "${USER_MAIN_NAME}"
 WORKDIR "/home/${USER_MAIN_NAME}/"
+RUN git checkout 'origin/master' -b "live/$(hostname)" \
+    && git reset --hard "${USER_MAIN_REF}" \
+    && "${HOME}/.yadm/bootstrap"
+
 CMD ["/usr/bin/tmux", "new-session", "-s", "a"]
