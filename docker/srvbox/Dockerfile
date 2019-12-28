@@ -78,5 +78,28 @@ RUN \
     && chown "${USER_MAIN_ID}:${USER_MAIN_ID}" \
         "/home/${USER_MAIN_NAME}/.ssh/authorized_keys"
 
+FROM base-1 as base-2
+
+# Configure apt and install packages
+RUN apt-get update  \
+    && apt-get install -y --no-install-recommends \
+        git-annex \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+    #
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install \
+    datalad \
+    jupyterlab \
+    organize-tool
+
+ARG USER_MAIN_NAME='user'
+RUN usermod --shell '/bin/bash' "${USER_MAIN_NAME}"
+
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
