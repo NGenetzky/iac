@@ -20,16 +20,17 @@ help: ## This help
 
 # Build the container
 build: ## Build the container
-	docker build --rm -t $(IMAGE_NAME) .
-
-build-nc: ## Build the container without caching
-	docker build --rm --no-cache -t $(IMAGE_NAME) .
+	./build.bash
 
 run: ## Run container
 	docker run \
-	--name $(CONTAINER_NAME) \
-	-v /tmp/:/mnt/rootfs:ro \
-	$(IMAGE_NAME):$(VERSION)
+		--name $(CONTAINER_NAME) \
+		-d \
+		-p '10122:22' \
+		-p '10180:8888' \
+		-v '/:/mnt/:ro' \
+		-v "$(PWD):/home/ngenetzky/Downloads/" \
+		$(IMAGE_NAME):$(VERSION)
 
 stop: ## Stop a running container
 	docker stop $(CONTAINER_NAME)
