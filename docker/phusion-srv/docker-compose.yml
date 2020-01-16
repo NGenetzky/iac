@@ -6,4 +6,4 @@ services:
       - "10080:80"
       - "10022:22"
     volumes:
-      -  ./authorized_keys:/root/.ssh/.authorized_keys
+      -  ./authorized_keys:/root/.ssh/authorized_keys
