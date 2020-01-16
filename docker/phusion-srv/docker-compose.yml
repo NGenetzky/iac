@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  phusion-srv:
+    build: ./
+    ports:
+      - "10080:80"
+      - "10022:22"
+    volumes:
+      -  ./authorized_keys:/root/.ssh/.authorized_keys
