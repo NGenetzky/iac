@@ -18,6 +18,17 @@ RUN /pd_build/nodejs.sh
 # Avoid warnings by using noninteractive during build (don't use ENV)
 ARG DEBIAN_FRONTEND=noninteractive
 
+# Install ppa key for 'neurodebian' so that we can install the
+# latest 'git-annex' (Ubuntu 18.04 only has 6.20180227-1).
+# http://neuro.debian.net/install_pkg.html?p=git-annex-standalone
+# TODO: Could make the URL of sources list be build arg.
+# WARNING: Building this layer can fail sporadically.
+RUN curl \
+        -o "/etc/apt/sources.list.d/neurodebian.sources.list" \
+            "http://neuro.debian.net/lists/bionic.us-tn.full" \
+    && apt-key adv --recv-keys \
+        --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9
+
 # 1. Install basic tools.
 # 2. Install docker. Ideally you should use this by mounting the host's docker
 # socket ("/var/run/docker.sock") into the container.
@@ -37,23 +48,6 @@ RUN apt-get update \
         iproute2 \
         procps \
         sudo \
-    #
-    # This is a workaround for the following error during "apt-key adv":
-    # "gpg: keyserver receive failed: Cannot assign requested address"
-    # For more information:
-    # https://github.com/f-secure-foundry/usbarmory-debian-base_image/issues/9#issuecomment-451635505
-    && mkdir -p "$HOME/.gnupg" \
-    && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
-    #
-    # Install ppa key for 'neurodebian' so that we can install the
-    # latest 'git-annex' (Ubuntu 18.04 only has 6.20180227-1).
-    # http://neuro.debian.net/install_pkg.html?p=git-annex-standalone
-    && curl \
-        -o "/etc/apt/sources.list.d/neurodebian.sources.list" \
-            "http://neuro.debian.net/lists/bionic.us-tn.full" \
-    && apt-key adv --recv-keys \
-        --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9 \
-    && apt-get update \
     #
     # Install git-annex and datalad
     && apt-get -y install \
