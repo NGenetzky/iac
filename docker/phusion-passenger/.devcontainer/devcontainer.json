@@ -1,0 +1,19 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+	"name": "phusion-passenger",
+	"dockerComposeFile": "../docker-compose.yml",
+	"service": "main",
+	"workspaceFolder": "/workspace",
+	"runArgs": [
+		// "-u", "${env:UID}", // phusion must run as root
+		// "--volume", "./root/:/root/",
+		// "--volume", "phusion-passenger-root:/root/",
+		// "--volume", "${env:HOME}/.ssh/:/home/user/.ssh",
+		// "--volume", "phusion-passenger-vsc:/home/user/.vscode-server",
+	],
+	"remoteUser": "user", // Container user VS Code should use when connecting
+	// "appPort": [],
+	// "settings":  { "workbench.colorTheme": "Quiet Light" },
+	// "postCreateCommand": "",
+	// "extensions": [],
+}

@@ -1,2 +1,13 @@
-main:
-  build: ./
+version: '3'
+services:
+  main:
+    # user: user # phusion must run as root
+    environment:
+      - "HOME=/home/user/"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/workspace:cached
+      # Forwards the host Docker socket to the container.
+      - /var/run/docker.sock:/var/run/docker.sock
