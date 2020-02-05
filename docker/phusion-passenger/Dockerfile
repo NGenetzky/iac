@@ -14,3 +14,84 @@ CMD ["/sbin/my_init"]
 # for features.
 RUN /pd_build/python.sh
 RUN /pd_build/nodejs.sh
+
+# Avoid warnings by using noninteractive during build (don't use ENV)
+ARG DEBIAN_FRONTEND=noninteractive
+
+# 1. Install basic tools.
+# 2. Install docker. Ideally you should use this by mounting the host's docker
+# socket ("/var/run/docker.sock") into the container.
+# 3. Install git annex and datalad
+RUN apt-get update \
+    #
+    # Configure apt and install packages
+    && apt-get -y install --no-install-recommends \
+        apt-utils \
+        dialog \
+    #
+    # Basic tools plus docker
+    && apt-get -y install \
+        docker-compose \
+        docker.io \
+        git \
+        iproute2 \
+        procps \
+        sudo \
+    #
+    # This is a workaround for the following error during "apt-key adv":
+    # "gpg: keyserver receive failed: Cannot assign requested address"
+    # For more information:
+    # https://github.com/f-secure-foundry/usbarmory-debian-base_image/issues/9#issuecomment-451635505
+    && mkdir -p "$HOME/.gnupg" \
+    && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
+    #
+    # Install ppa key for 'neurodebian' so that we can install the
+    # latest 'git-annex' (Ubuntu 18.04 only has 6.20180227-1).
+    # http://neuro.debian.net/install_pkg.html?p=git-annex-standalone
+    && curl \
+        -o "/etc/apt/sources.list.d/neurodebian.sources.list" \
+            "http://neuro.debian.net/lists/bionic.us-tn.full" \
+    && apt-key adv --recv-keys \
+        --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9 \
+    && apt-get update \
+    #
+    # Install git-annex and datalad
+    && apt-get -y install \
+        git-annex-standalone \
+        datalad \
+    #
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configuration for default non-root user.
+ARG USER_NAME=user
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# Create non-root user and give them sudo with nopasswd.
+RUN printf "### Building image for user %s (%s:%s) ###" \
+        "${USER_NAME}" \
+        "${USER_UID}" \
+        "${USER_GID}" \
+    #
+    # Create a non-root user.
+    && groupadd \
+        --gid "$USER_GID" \
+        "$USER_NAME" \
+    && useradd \
+        -s /bin/bash \
+        --uid "$USER_UID" \
+        --gid "$USER_GID" \
+        -m "$USER_NAME" \
+    #
+    # Add sudo support for the non-root user
+    && apt-get install -y sudo \
+    && echo "$USER_NAME ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/$USER_NAME" \
+    && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
+    #
+    # Special steps for vscode remote-container support
+    && install -d \
+        "/workspace/"
+
