@@ -35,13 +35,26 @@ rm: ## docker-compose rm # Remove (running) containers
 ps: ## docker-compose ps # List containers 
 	docker-compose $@
 
+#
+# docker-compose targets
+#
 
-clean: ## clean. Clean up
-	echo 'TODO'
+DOCKER_SERVICE_NAME="main"
+console: ## Start bash login shell in new container
+	docker-compose run \
+		"$(DOCKER_SERVICE_NAME)" \
+		"/bin/bash" -l
+enter: ## Start bash login shell in existing container
+	docker-compose exec \
+		"$(DOCKER_SERVICE_NAME)" \
+		"/bin/bash" -l
+
+
 
 #
 # aliases
 #
 
 remove: rm ## Remove (running) containers
+clean: rm ## clean. Clean up
 
