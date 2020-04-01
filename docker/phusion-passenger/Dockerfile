@@ -59,6 +59,12 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+RUN rm -f \
+    # enable nginx
+    '/etc/service/nginx/down' \
+    # remove default site
+    '/etc/nginx/sites-enabled/default'
+
 # Configuration for default non-root user.
 ARG USER_NAME=user
 ARG USER_UID=1000
@@ -89,3 +95,7 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
     && install -d \
         "/workspace/"
 
+COPY 'nginx-site-enabled/default.conf' \
+    '/etc/nginx/sites-enabled/'
+RUN mkdir -p '/srv/web/' \
+    && ln -sT '/workspace/' '/srv/web/workspace'
