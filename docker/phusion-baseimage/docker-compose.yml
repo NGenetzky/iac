@@ -2,6 +2,7 @@ version: '3'
 services:
   main:
     # user: user # phusion must run as root
+    command: ['sleep', 'infinity']
     environment:
       - "HOME=/home/user/"
     build:
