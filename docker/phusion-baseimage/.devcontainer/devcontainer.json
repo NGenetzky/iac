@@ -12,6 +12,7 @@
 	// 	"source=${localWorkspaceFolder},target=/workspace/,type=bind",
 	// 	"source=vsc-2020-04-01,target=/home/user/.vscode-server/extensions,type=volume",
 	// ],
+	"updateRemoteUserUID": false,
 
 	// vsc-docker-compose-only
 	"dockerComposeFile": ["../docker-compose.yml", "./docker-compose-devcontainer.yml"],
@@ -20,7 +21,6 @@
 
 	// vsc-docker
 	"remoteUser": "user", // Container user VS Code should use when connecting
-	"updateRemoteUserUID": false,
 
 	// vsc-docker-general
 	"name": "phusion-base",
