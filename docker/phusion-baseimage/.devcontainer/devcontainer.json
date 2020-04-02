@@ -1,0 +1,35 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+// References:
+// https://code.visualstudio.com/docs/remote/containers#_devcontainerjson-reference
+// https://code.visualstudio.com/docs/remote/containers-advanced
+{
+
+	// vsc-docker-image-only # NOTE: dockerfile or image only
+	// "image": "node", // "dockerFile": "Dockefile", // "context": "",
+	// "workspaceMount": "source=${localWorkspaceFolder}/sub-folder,target=/workspace,type=bind,consistency=delegated",
+	"workspaceFolder": "/workspace",
+	// "mounts": [
+	// 	"source=${localWorkspaceFolder},target=/workspace/,type=bind",
+	// 	"source=vsc-2020-04-01,target=/home/user/.vscode-server/extensions,type=volume",
+	// ],
+
+	// vsc-docker-compose-only
+	"dockerComposeFile": ["../docker-compose.yml", "./docker-compose-devcontainer.yml"],
+	"service": "main",
+	"shutdownAction": "none",
+
+	// vsc-docker
+	"remoteUser": "user", // Container user VS Code should use when connecting
+	"updateRemoteUserUID": false,
+
+	// vsc-docker-general
+	"name": "phusion-base",
+	// "postCreateCommand": [],
+	// "initializeCommand": [],
+	// "forwardPorts": [],
+	// "dev": [],
+
+	// "extensions": [],
+	// "settings":  {},
+
+}

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  main:
+    command: ['sleep', 'infinity']
+    volumes:
+    - ./:/workspace
+    # - vsc-2020-04-01-2d9c189:/home/user/.vscode-server/
+volumes:
+  vsc-2020-04-01-2d9c189:
