@@ -24,6 +24,17 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Configure KISS bash and zsh sensible defaults.
+RUN curl -o '/usr/local/share/bash-sensible.bash' \
+        "https://raw.githubusercontent.com/mrzool/bash-sensible/5a2269a6a12e2a1b10629bb223f2f3c27ac07050/sensible.bash" \
+    && echo "source '/usr/local/share/bash-sensible.bash'" >> '/etc/skel/.bashrc'
+RUN git clone --depth 1 --shallow-submodules --recursive \
+        https://github.com/changs/slimzsh.git \
+        '/usr/local/share/slimzsh/'
+
+# General purpose configuration
+COPY ./rootfs/ /
+
 # Configuration for default non-root user.
 ARG USER_NAME='user'
 ARG USER_UID='1000'
