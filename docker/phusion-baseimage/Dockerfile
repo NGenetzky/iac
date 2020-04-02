@@ -70,22 +70,61 @@ ENTRYPOINT ["/sbin/my_init", "--", "/sbin/entrypoint"]
 
 # mainstream apt packages that I use frequently
 RUN apt-get --quiet --yes update \
-    #
-    # Install git-annex and datalad
-    && apt-get -y install \
+    && apt-get -y install --no-install-recommends \
+        #
+        # Core development tools
+        bash \
+        build-essential \
+        ca-certificates \
+        curl \
+        git \
+        lsb-release \
+        sudo \
+        tmux \
+        vim \
+        yadm \
+        zsh \
+        #
+        # Python development tools
+        python3-dbg \
+        python3-dbus \
+        python3-dev \
+        python3-pip \
+        python3-setuptools \
+        python3-wheel \
+        \
+        # Python2 development tools
+        python-dbg \
+        python-dbus \
+        python-dev \
+        python-gobject \
+        python-pip \
+        python-setuptools \
+        python-wheel \
+        #
+        # Install git-annex and datalad
         git-annex-standalone \
         datalad \
+        # Other development tools
+        clang-format \
+        tcl \
+    #
+    # Additional tools installed with pip
+    && pip install \
+        pre-commit \
+        tox \
+        virtualenvwrapper \
     #
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-
 # Configuration for default non-root user.
-ARG USER_NAME=user
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER_NAME='user'
+ARG USER_UID='1000'
+ARG USER_GID="$USER_UID"
+ARG USER_SHELL='/usr/bin/zsh'
 # Create non-root user and give them sudo with nopasswd.
 RUN printf "### Building image for user %s (%s:%s) ###" \
         "${USER_NAME}" \
@@ -93,14 +132,11 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
         "${USER_GID}" \
     #
     # Create a non-root user.
-    && groupadd \
-        --gid "$USER_GID" \
+    && groupadd --gid "$USER_GID" \
         "$USER_NAME" \
-    && useradd \
-        -s /bin/bash \
-        --uid "$USER_UID" \
-        --gid "$USER_GID" \
-        -m "$USER_NAME" \
+    && useradd --create-home --shell "${USER_SHELL}" \
+        --uid "${USER_UID}" --gid "${USER_GID}" \
+        "${USER_NAME}" \
     #
     # Add sudo support for the non-root user
     && apt-get install -y sudo \
@@ -110,8 +146,37 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
     # Special steps for vscode remote-container support
     && install -d --mode 0777 --owner "${USER_UID}" --group "${USER_GID}" \
         "/workspace/" \
+        \
+        '/root/.vscode-server/' \
+        '/root/.vscode-server/bin/' \
+        '/root/.vscode-server/extensions' \
+        \
+        "/home/$USER_NAME/.vscode-server" \
         "/home/$USER_NAME/.vscode-server/bin" \
         "/home/$USER_NAME/.vscode-server/extensions"
+
+ARG USER_REF='origin/ngenetzky/novo'
+USER "${USER_NAME}"
+ARG HOME="/home/${USER_NAME}"
+RUN rm \
+        "${HOME}/.bash_logout" \
+        "${HOME}/.bashrc" \
+        "${HOME}/.profile" \
+    && install -m 700 -d \
+        "${HOME}/.ssh" \
+    && yadm clone 'https://github.com/NGenetzky/home.git' \
+    && yadm checkout 'origin/ngenetzky/novo' -b "live/$(hostname)" \
+    && "${HOME}/.yadm/bootstrap" \
+    # TODO: This should be in bootstrap
+    && zsh -c 'source ~/.zshrc'
+
+USER root
+
+# Archive the home directory in case user want's to mount over it.
+RUN tar -vcap \
+    -f "/usr/share/home-${USER_NAME}.tar.xz" \
+    -C "/home/${USER_NAME}" \
+    ./
 
 ################################################################################
 # docker metadata
