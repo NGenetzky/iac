@@ -43,35 +43,6 @@ RUN apt-get --quiet --yes update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Configuration for default non-root user.
-ARG USER_NAME=user
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-# Create non-root user and give them sudo with nopasswd.
-RUN printf "### Building image for user %s (%s:%s) ###" \
-        "${USER_NAME}" \
-        "${USER_UID}" \
-        "${USER_GID}" \
-    #
-    # Create a non-root user.
-    && groupadd \
-        --gid "$USER_GID" \
-        "$USER_NAME" \
-    && useradd \
-        -s /bin/bash \
-        --uid "$USER_UID" \
-        --gid "$USER_GID" \
-        -m "$USER_NAME" \
-    #
-    # Add sudo support for the non-root user
-    && apt-get install -y sudo \
-    && echo "$USER_NAME ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/$USER_NAME" \
-    && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
-    #
-    # Special steps for vscode remote-container support
-    && install -d \
-        "/workspace/"
-
 ################################################################################
 # phusion magic
 #
@@ -109,6 +80,38 @@ RUN apt-get --quiet --yes update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
+
+# Configuration for default non-root user.
+ARG USER_NAME=user
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+# Create non-root user and give them sudo with nopasswd.
+RUN printf "### Building image for user %s (%s:%s) ###" \
+        "${USER_NAME}" \
+        "${USER_UID}" \
+        "${USER_GID}" \
+    #
+    # Create a non-root user.
+    && groupadd \
+        --gid "$USER_GID" \
+        "$USER_NAME" \
+    && useradd \
+        -s /bin/bash \
+        --uid "$USER_UID" \
+        --gid "$USER_GID" \
+        -m "$USER_NAME" \
+    #
+    # Add sudo support for the non-root user
+    && apt-get install -y sudo \
+    && echo "$USER_NAME ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/$USER_NAME" \
+    && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
+    #
+    # Special steps for vscode remote-container support
+    && install -d --mode 0777 --owner "${USER_UID}" --group "${USER_GID}" \
+        "/workspace/" \
+        "/home/$USER_NAME/.vscode-server/bin" \
+        "/home/$USER_NAME/.vscode-server/extensions"
 
 ################################################################################
 # docker metadata

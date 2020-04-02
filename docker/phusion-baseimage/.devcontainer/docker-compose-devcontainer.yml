@@ -3,4 +3,7 @@ services:
   main:
     command: ['sleep', 'infinity']
     volumes:
-      - ./:/workspace:cached
+    - ./:/workspace
+    # - vsc-2020-04-01-2d9c189:/home/user/.vscode-server/
+volumes:
+  vsc-2020-04-01-2d9c189:

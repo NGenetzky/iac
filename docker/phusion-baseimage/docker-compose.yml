@@ -3,12 +3,11 @@ services:
   main:
     # user: user # phusion must run as root
     command: ['sleep', 'infinity']
-    environment:
-      - "HOME=/home/user/"
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # environment:
+    # - "HOME=/home/user/"
+    build: ./
     # volumes:
-    #   - ./:/workspace:cached
-    #   # Forwards the host Docker socket to the container.
-    #   - /var/run/docker.sock:/var/run/docker.sock
+    # - ./:/workspace
+
+    # Forwards the host Docker socket to the container.
+    # - /var/run/docker.sock:/var/run/docker.sock
