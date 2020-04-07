@@ -1,5 +1,9 @@
 FROM ubuntu:18.04 as base-0
 
+# Using "ARG" influences the behavior of apt only while building container.
+# No Debian that's a bad Debian! We don't have an interactive prompt don't fail
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Configure apt and install packages
 RUN apt-get update \
     && apt-get -y install --no-install-recommends \
@@ -28,6 +32,7 @@ RUN apt-get update \
 RUN curl -o '/usr/local/share/bash-sensible.bash' \
         "https://raw.githubusercontent.com/mrzool/bash-sensible/5a2269a6a12e2a1b10629bb223f2f3c27ac07050/sensible.bash" \
     && echo "source '/usr/local/share/bash-sensible.bash'" >> '/etc/skel/.bashrc'
+# TODO: This should be locked down to a specific version
 RUN git clone --depth 1 --shallow-submodules --recursive \
         https://github.com/changs/slimzsh.git \
         '/usr/local/share/slimzsh/'
@@ -59,12 +64,9 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
     && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
     #
     # Special steps for vscode remote-container support
-    && install -d --mode 0777 --owner "${USER_UID}" --group "${USER_GID}" \
-        "/workspace/" \
-        \
-        '/root/.vscode-server/' \
-        '/root/.vscode-server/bin/' \
-        '/root/.vscode-server/extensions' \
+    && install -d --mode 0755 --owner "${USER_UID}" --group "${USER_GID}" \
+        '/workspace/' \
+        '/workspaces/' \
         \
         "/home/$USER_NAME/.vscode-server" \
         "/home/$USER_NAME/.vscode-server/bin" \
