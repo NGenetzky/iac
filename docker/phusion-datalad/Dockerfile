@@ -32,47 +32,9 @@ RUN apt-get --quiet --yes update \
     && apt-get -y install --no-install-recommends \
         apt-utils \
         dialog \
-    # Then we can proceed with our minimal packages
+    # Then we can proceed with our packages
     && apt-get -y install --no-install-recommends \
-    # # Basic tools
-        sudo \
-        tmux \
-        vim \
-    # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-################################################################################
-# phusion magic
-#
-# phusion specific magic starts here. Must use FROM 'phusion/*'.
-#
-# - init scripts (/etc/my_init.d/)
-# - init process (/sbin/my_init)
-#
-####
-RUN install -d \
-    '/etc/entrypoint.d/' \
-    '/etc/my_init.d/'
-
-# Use baseimage-docker's init to execute our custom entrypoint.
-COPY entrypoint.sh /sbin/entrypoint
-COPY entrypoint.d/ /etc/entrypoint.d/
-ENTRYPOINT ["/sbin/my_init", "--", "/sbin/entrypoint"]
-
-# phusion specific magic ends here.
-################################################################################
-
-################################################################################
-# WIP Layers
-####
-
-# mainstream apt packages that I use frequently
-RUN apt-get --quiet --yes update \
-    && apt-get -y install --no-install-recommends \
-        #
-        # Core development tools
+        # Basic tools
         bash \
         build-essential \
         ca-certificates \
@@ -82,43 +44,24 @@ RUN apt-get --quiet --yes update \
         sudo \
         tmux \
         vim \
-        yadm \
         zsh \
-        #
-        # Python development tools
-        python3-dbg \
-        python3-dbus \
-        python3-dev \
-        python3-pip \
-        python3-setuptools \
-        python3-wheel \
-        \
-        # Python2 development tools
-        python-dbg \
-        python-dbus \
-        python-dev \
-        python-gobject \
-        python-pip \
-        python-setuptools \
-        python-wheel \
-        #
         # Install git-annex and datalad
         git-annex-standalone \
         datalad \
-        # Other development tools
-        clang-format \
-        tcl \
-    #
-    # Additional tools installed with pip
-    && pip install \
-        pre-commit \
-        tox \
-        virtualenvwrapper \
-    #
+        #
+        # Python packaging tools
+        python3-pip \
+        python3-setuptools \
+        python3-wheel \
     # Clean up
     && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Configure bash with sensible defaults.
+RUN curl -o '/usr/local/share/bash-sensible.bash' \
+        "https://raw.githubusercontent.com/mrzool/bash-sensible/5a2269a6a12e2a1b10629bb223f2f3c27ac07050/sensible.bash" \
+    && echo "source '/usr/local/share/bash-sensible.bash'" >> '/etc/skel/.bashrc'
 
 # Configuration for default non-root user.
 ARG USER_NAME='user'
@@ -144,31 +87,13 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
     && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
     #
     # Special steps for vscode remote-container support
-    && install -d --mode 0777 --owner "${USER_UID}" --group "${USER_GID}" \
-        "/workspace/" \
-        \
-        '/root/.vscode-server/' \
-        '/root/.vscode-server/bin/' \
-        '/root/.vscode-server/extensions' \
+    && install -d --mode 0755 --owner "${USER_UID}" --group "${USER_GID}" \
+        '/workspace/' \
+        '/workspaces/' \
         \
         "/home/$USER_NAME/.vscode-server" \
         "/home/$USER_NAME/.vscode-server/bin" \
         "/home/$USER_NAME/.vscode-server/extensions"
-
-ARG USER_REF='origin/ngenetzky/novo'
-USER "${USER_NAME}"
-ARG HOME="/home/${USER_NAME}"
-RUN rm \
-        "${HOME}/.bash_logout" \
-        "${HOME}/.bashrc" \
-        "${HOME}/.profile" \
-    && install -m 700 -d \
-        "${HOME}/.ssh" \
-    && yadm clone 'https://github.com/NGenetzky/home.git' \
-    && yadm checkout 'origin/ngenetzky/novo' -b "live/$(hostname)" \
-    && "${HOME}/.yadm/bootstrap" \
-    # TODO: This should be in bootstrap
-    && zsh -c 'source ~/.zshrc'
 
 USER root
 
@@ -177,6 +102,9 @@ RUN tar -vcap \
     -f "/usr/share/home-${USER_NAME}.tar.xz" \
     -C "/home/${USER_NAME}" \
     ./
+
+USER "${USER_NAME}"
+WORKDIR "/home/${USER_NAME}/"
 
 ################################################################################
 # docker metadata
@@ -194,7 +122,7 @@ RUN tar -vcap \
 # IMAGE_NAME: the name and tag of the Docker repository being built. (This variable is a combination of DOCKER_REPO:DOCKER_TAG.)
 ARG SOURCE_BRANCH='unknown-branch'
 ARG SOURCE_COMMIT='unknown-commit'
-ARG DOCKER_REPO='ngenetzky/phusion-base'
+ARG DOCKER_REPO='ngenetzky/phusion-datalad'
 ARG DOCKERFILE_PATH='Dockerfile'
 ARG DOCKER_TAG='latest'
 ARG IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
@@ -205,11 +133,8 @@ ARG BUILD_DATE='unknown-date'
 
 # Hardcoded Metadata
 ARG META_VCS_URL='https://github.com/ngenetzky/iac/'
-ARG META_SUMMARY='Image built ontop of phusion-baseimage'
-ARG META_MAINTAINER='Nathan Genetzky <n@genetzky.us>'
-
-# Yocto Metadata
-# https://wiki.yoctoproject.org/wiki/Releases
+ARG META_SUMMARY='Image for Datalad built ontop of phusion-baseimage'
+ARG META_MAINTAINER='Nathan Genetzky <nathan@genetzky.us>'
 
 # Build-time metadata as defined at http://label-schema.org
 LABEL \

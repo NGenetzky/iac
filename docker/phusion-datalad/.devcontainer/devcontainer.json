@@ -23,7 +23,7 @@
 	"remoteUser": "user", // Container user VS Code should use when connecting
 
 	// vsc-docker-general
-	"name": "phusion-base",
+	"name": "phusion-datalad",
 	// "postCreateCommand": [],
 	// "initializeCommand": [],
 	// "forwardPorts": [],
