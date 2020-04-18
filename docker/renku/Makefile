@@ -32,8 +32,9 @@ ps: ## docker-compose ps # List containers
 DOCKER_SERVICE_NAME="main"
 console: ## Start bash login shell in new container
 	docker-compose run \
+		--entrypoint "/bin/bash" \
 		"$(DOCKER_SERVICE_NAME)" \
-		"/bin/bash" -l
+		-l
 enter: ## Start bash login shell in existing container
 	docker-compose exec \
 		"$(DOCKER_SERVICE_NAME)" \

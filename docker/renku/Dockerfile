@@ -1,3 +1,8 @@
+# References:
+#
+# - https://github.com/jupyterhub/jupyterhub
+# - https://github.com/SwissDataScienceCenter/renkulab-docker
+# - https://github.com/SwissDataScienceCenter/renkulab-docker/blob/master/docker/py3.7/Dockerfile
 FROM renku/renkulab:renku0.9.1-py3.7-0.5.2
 
 # Uncomment and adapt if code is to be included in the image
@@ -20,3 +25,10 @@ RUN conda env update -q -f /tmp/environment.yml && \
     /opt/conda/bin/pip install -r /tmp/requirements.txt && \
     conda clean -y --all && \
     conda env export -n "root"
+
+# This could be used to skip their entrypoint
+# ENTRYPOINT [ "/tini", "--", "/usr/local/bin/start-singleuser.sh" ]
+
+# Using these will just run jupyter, and skip their 'singleuser' stuff.
+ENTRYPOINT [ "/tini", "--", "/opt/conda/bin/jupyter", "lab", "--ip=0.0.0.0" ]
+CMD []
