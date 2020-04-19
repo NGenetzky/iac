@@ -1,0 +1,11 @@
+'@context':
+  created: schema:dateCreated
+  schema: http://schema.org/
+  name: schema:name
+  updated: schema:dateUpdated
+  version: schema:schemaVersion
+'@type': schema:Project
+created: 2020-03-20T02:40:55.927Z
+name: unnammed-renku-project
+updated: 2020-03-20T02:40:55.927Z
+version: '1'
