@@ -1,3 +1,13 @@
+# phusion-ngenetzky Dockerfile
+
+# References
+# - https://github.com/NGenetzky/iac/
+# - https://medium.com/@tonistiigi/advanced-multi-stage-build-patterns-6f741b852fae
+
+##################################################################################
+##################################################################################
+# FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
+#
 # Use phusion/baseimage as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
 #
@@ -8,19 +18,10 @@
 # |   18.04    |  0.11   | released on Aug 16, 2018 |
 # |   16.04    | 0.9.22  | released on May 17, 2017 |
 #
-FROM phusion/baseimage:0.11
+#########
+#########
 
-# Add apt repository from neuro debian
-# "http://neuro.debian.net/lists/bionic.us-tn.full"
-# Install ppa key for 'neurodebian' so that we can install the
-# latest 'git-annex' (Ubuntu 18.04 only has 6.20180227-1).
-# http://neuro.debian.net/install_pkg.html?p=git-annex-standalone
-# WARNING: Building this layer can fail sporadically.
-RUN curl \
-        -o "/etc/apt/sources.list.d/neurodebian.sources.list" \
-            "http://neuro.debian.net/lists/bionic.us-tn.full" \
-    && apt-key adv --recv-keys \
-        --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9
+FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
 
 # Using "ARG" influences the behavior of apt only while building container.
 # No Debian that's a bad Debian! We don't have an interactive prompt don't fail
@@ -101,10 +102,6 @@ RUN apt-get --quiet --yes update \
         python-pip \
         python-setuptools \
         python-wheel \
-        #
-        # Install git-annex and datalad
-        git-annex-standalone \
-        datalad \
         # Other development tools
         clang-format \
         tcl \
