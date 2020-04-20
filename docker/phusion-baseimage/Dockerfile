@@ -212,7 +212,6 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
 ####
 
 # ngnetzky-ubuntu-apt-layer2-special-or-wip
-# mainstream apt packages that I use frequently
 RUN apt-get --quiet --yes update \
     && apt-get -y install --no-install-recommends \
         shellcheck \
@@ -225,6 +224,27 @@ RUN apt-get --quiet --yes update \
         papermill \
         ptpython \
         tmuxp \
+    #
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# ngnetzky-ubuntu-docker
+RUN apt-get --quiet --yes update \
+    && apt-get -y install --no-install-recommends \
+        docker-compose \
+        docker.io \
+        git \
+        iproute2 \
+        procps \
+    ####
+    # Additional tools installed with pip
+    && pip3 install --no-cache-dir \
+        docker \
+    ####
+    # Enable the main user to use docker
+    && usermod -a -G "docker" "${USER_NAME}" \
     #
     # Clean up
     && apt-get autoremove -y \
