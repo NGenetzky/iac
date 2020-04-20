@@ -6,8 +6,26 @@ services:
     # environment:
     # - "HOME=/home/user/"
     build: ./
-    # volumes:
-    # - ./:/workspace
+    volumes:
+    # You can bind mount current directory as read-only reference.
+    # - ./:/mnt/pwd/:ro
+
+    # You can bind mount current directory as workspace
+    - ./:/home/user/workspace/
+    # - ./:/workspace/
 
     # Forwards the host Docker socket to the container.
     # - /var/run/docker.sock:/var/run/docker.sock
+
+    # You can mount a 'tmpfs' for performance
+    - cache_vol:/var/cache/
+
+    # ports:
+      # Only expose port 22 to localhost
+      # - "127.0.0.1:10022:22"
+
+volumes:
+  cache_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

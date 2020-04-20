@@ -4,11 +4,11 @@ services:
     command: ['sleep', 'infinity']
     volumes:
     # You can bind mount current directory as read-only reference.
-    - ./:/mnt/pwd/:ro
+    # - ./:/mnt/pwd/:ro
 
     # You can bind mount current directory as workspace
     # - ./:/home/user/workspace/
-    - ./:/workspace/
+    # - ./:/workspace/
 
     # Or use a new named volume as workspace
     # - vsc-workspace:/workspace/
@@ -17,4 +17,4 @@ services:
     - user-vscode-server:/home/user/.vscode-server/
 volumes:
   user-vscode-server:
-  vsc-workspace:
+  # vsc-workspace:
