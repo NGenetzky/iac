@@ -171,7 +171,9 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
         # 'bin' for XDG Base Directory Specification
         # https://www.freedesktop.org/software/systemd/man/file-hierarchy.html#Home%20Directory
         "/home/$USER_NAME/bin" \
+        "/home/$USER_NAME/.local/" \
         "/home/$USER_NAME/.local/bin" \
+        "/home/$USER_NAME/.local/share" \
         # vscode remote-container support
         "/home/$USER_NAME/workspace/" \
         "/home/$USER_NAME/.vscode-server" \
@@ -181,6 +183,29 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
         # vscode remote-container support
         "/workspace/" \
         "/workspaces/"
+
+# # ngnetzky-user-ssh-authorized_keys-from-github
+# ARG URL_KEYS="https://github.com/NGenetzky.keys"
+# RUN \
+#     echo "AllowAgentForwarding yes" >> '/etc/ssh/sshd_config' \
+#     ## ssh authorized key management
+#     && install -m '0700' \
+#         -o "${USER_UID}" -g "${USER_GID}" \
+#         -d "/home/${USER_NAME}/.ssh/" \
+#     && wget "${URL_KEYS}" \
+#         -O "/home/${USER_NAME}/.ssh/github-ngenetzky.keys" \
+#     && install -T -m '0600' \
+#         -o "${USER_UID}" -g "${USER_GID}" \
+#         "/home/${USER_NAME}/.ssh/github-ngenetzky.keys" \
+#         "/home/${USER_NAME}/.ssh/authorized_keys" \
+#     #####
+#     # WARNING: Phusion magic here
+#     && rm -f '/etc/service/sshd/down' \
+#     # Regenerate SSH host keys. baseimage-docker does not contain any, so you
+#     # have to do that yourself. You may also comment out this instruction; the
+#     # init system will auto-generate one during boot.
+#     && '/etc/my_init.d/00_regen_ssh_host_keys.sh'
+# EXPOSE 22
 
 ################################################################################
 # WIP Layers
@@ -281,9 +306,6 @@ ARG BUILD_DATE='unknown-date'
 ARG META_VCS_URL='https://github.com/ngenetzky/iac/'
 ARG META_SUMMARY='Image built ontop of phusion-baseimage'
 ARG META_MAINTAINER='Nathan Genetzky <n@genetzky.us>'
-
-# Yocto Metadata
-# https://wiki.yoctoproject.org/wiki/Releases
 
 # Build-time metadata as defined at http://label-schema.org
 LABEL \

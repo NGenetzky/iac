@@ -7,6 +7,7 @@
 SHELL := /bin/bash
 # The directory of this file
 DIR := $(shell echo $(shell cd "$(shell  dirname "${BASH_SOURCE[0]}" )" && pwd ))
+# -user string Username or UID (format: <name|uid>[:<group|gid>])
 
 .PHONY: help confirm
 
@@ -15,7 +16,7 @@ help: ## Show Makefile help message
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 confirm:
-	@( read -p "$(RED)Are you sure? [y/N]$(RESET): " sure && case "$$sure" in [yY]) true;; *) false;; esac )
+	@( read -p "Are you sure? [y/N]: " sure && case "$$sure" in [yY]) true;; *) false;; esac )
 
 .DEFAULT_GOAL := help
 ####
@@ -32,10 +33,13 @@ confirm:
 # constants
 DOCKER_COMPOSE := docker-compose
 DOCKER_COMPOSE_FILE := $(DIR)/docker-compose.yml
+
 C_SINGLE_DEFAULT=main
+USER_NAME=user
 
 # arguments
 c :=
+u := --user '$(shell id -u):$(shell id -g)'
 c_single := $(if $(c),$(c),$(C_SINGLE_DEFAULT))
 
 #
@@ -88,15 +92,26 @@ config: ## Validate and view the Compose file
 
 .PHONY: console
 console: ## Start bash login shell in new container
-	docker-compose run $(c_single) "/bin/bash" -l
+	docker-compose run \
+		--entrypoint '/bin/bash' \
+		--workdir "/home/$(USER_NAME)/" \
+		$(u) \
+		$(c_single) \
+		-l
 
 .PHONY: enter
 enter: ## Start bash login shell in existing container
-	docker-compose exec $(c_single) "/bin/bash" -l
+	docker-compose exec \
+		$(u) \
+		$(c_single) \
+		'/bin/bash' -l
 
 .PHONY: login
 login: ## Start bash login shell in existing container
-	docker-compose exec $(c_single) "/bin/bash" -l
+	docker-compose exec \
+		$(u) \
+		$(c_single) \
+		'/bin/bash' -l
 
 .PHONY: root_console
 root_console: ## Start bash login shell as root in new container
