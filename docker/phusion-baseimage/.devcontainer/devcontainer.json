@@ -35,7 +35,7 @@
 	// vsc-docker
 	"containerUser": "root", // WARNING: phusion must run as root
 	"remoteUser": "user", // Container user VS Code should use when connecting
-	"shutdownAction": "none",
+	// "shutdownAction": "none",
 	"workspaceFolder": "/workspace/",
 
 	// vsc-docker-general
@@ -44,7 +44,30 @@
 	// "forwardPorts": [],
 	// "dev": [],
 
-	// "extensions": [],
+	"extensions": [
+		"Braver.vscode-solarized",
+		"CoenraadS.bracket-pair-colorizer",
+		"PKief.material-icon-theme",
+		"YoshinoriN.current-file-path",
+		"alefragnani.Bookmarks",
+		"alefragnani.project-manager",
+		"chrislajoie.vscode-modelines",
+		"codezombiech.gitignore",
+		"eamodio.gitlens",
+		"emilast.LogFileHighlighter",
+		"fabiospampinato.vscode-terminals",
+		"letmaik.git-tree-compare",
+		"ms-python.python",
+		"ms-vscode.cpptools",
+		"ryuta46.multi-command",
+		"vscodevim.vim",
+		"yzhang.markdown-all-in-one",
+		"redhat.vscode-yaml",
+		"marklarah.pre-commit-vscode",
+		"austin.code-gnu-global",
+		"davidanson.vscode-markdownlint",
+		"donjayamanne.githistory"
+	],
 	// "settings":  {},
 
 }

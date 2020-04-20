@@ -219,10 +219,14 @@ RUN apt-get --quiet --yes update \
     # Additional tools installed with pip
     && pip3 install --no-cache-dir \
         cookiecutter \
+        ipykernel \
+        jupyter \
         jupyter-repo2docker \
         jupytext \
+        nbconvert \
         papermill \
         ptpython \
+        pylint \
         tmuxp \
     #
     # Clean up
