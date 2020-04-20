@@ -3,7 +3,18 @@ services:
   main:
     command: ['sleep', 'infinity']
     volumes:
-    - ./:/workspace
-    # - vsc-2020-04-01-2d9c189:/home/user/.vscode-server/
+    # You can bind mount current directory as read-only reference.
+    - ./:/mnt/pwd/:ro
+
+    # You can bind mount current directory as workspace
+    # - ./:/home/user/workspace/
+    - ./:/workspace/
+
+    # Or use a new named volume as workspace
+    # - vsc-workspace:/workspace/
+
+    # You can use a named volume for vscode-server files.
+    - user-vscode-server:/home/user/.vscode-server/
 volumes:
-  vsc-2020-04-01-2d9c189:
+  user-vscode-server:
+  vsc-workspace:

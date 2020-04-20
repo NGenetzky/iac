@@ -1,29 +1,44 @@
-// See https://aka.ms/vscode-remote/devcontainer.json for format details.
-// References:
-// https://code.visualstudio.com/docs/remote/containers#_devcontainerjson-reference
-// https://code.visualstudio.com/docs/remote/containers-advanced
 {
+	// devcontainer.json for phusion-ngenetzky
+	//
+	// TODO: Get folder-uri working, such as this example
+	// https://github.com/microsoft/vscode-remote-release/issues/190
+	// code-insiders --folder-uri "vscode-remote://ssh-remote+host/path/to/project"
+	//
+	// References:
+	// - See https://aka.ms/vscode-remote/devcontainer.json for format details.
+	// - https://code.visualstudio.com/docs/remote/containers#_devcontainerjson-reference
+	// - https://code.visualstudio.com/docs/remote/containers-advanced
+	"name": "phusion-ngenetzky",
+
 
 	// vsc-docker-image-only # NOTE: dockerfile or image only
 	// "image": "node", // "dockerFile": "Dockefile", // "context": "",
 	// "workspaceMount": "source=${localWorkspaceFolder}/sub-folder,target=/workspace,type=bind,consistency=delegated",
-	"workspaceFolder": "/workspace",
+	// "workspaceFolder": "/workspace",
 	// "mounts": [
 	// 	"source=${localWorkspaceFolder},target=/workspace/,type=bind",
 	// 	"source=vsc-2020-04-01,target=/home/user/.vscode-server/extensions,type=volume",
 	// ],
-	"updateRemoteUserUID": false,
+	// "updateRemoteUserUID": false,
 
 	// vsc-docker-compose-only
-	"dockerComposeFile": ["../docker-compose.yml", "./docker-compose-devcontainer.yml"],
+	// https://github.com/microsoft/vscode-dev-containers/blob/master/container-templates/docker-compose/.devcontainer/devcontainer.json
+		"dockerComposeFile": [
+		"../docker-compose.yml",
+		"docker-compose-devcontainer.yml",
+	],
 	"service": "main",
-	"shutdownAction": "none",
+	// NOTE: This setting is important and changes how you use the container:
+	// "shutdownAction": "none", // "none" if you want your containers running after VS Code shuts down.
 
 	// vsc-docker
+	"containerUser": "root", // WARNING: phusion must run as root
 	"remoteUser": "user", // Container user VS Code should use when connecting
+	"shutdownAction": "none",
+	"workspaceFolder": "/workspace/",
 
 	// vsc-docker-general
-	"name": "phusion-base",
 	// "postCreateCommand": [],
 	// "initializeCommand": [],
 	// "forwardPorts": [],
