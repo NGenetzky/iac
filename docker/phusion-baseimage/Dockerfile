@@ -28,7 +28,7 @@ COPY .docker/phusion/rootfs/ /
 # No Debian that's a bad Debian! We don't have an interactive prompt don't fail
 ARG DEBIAN_FRONTEND=noninteractive
 
-# ngnetzky-ubuntu-apt-layer0
+# ngnetzky-ubuntu-apt-layer0-base
 # We don't use phusion's "install_clean" because we want portability.
 RUN apt-get --quiet --yes update \
     # We first install these packages
@@ -58,6 +58,78 @@ RUN apt-get --quiet --yes update \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# ngnetzky-ubuntu-apt-layer1-main
+# mainstream apt packages that I use frequently
+RUN apt-get --quiet --yes update \
+    && apt-get -y install --no-install-recommends \
+        ####
+        # Core development tools
+        bash \
+        build-essential \
+        ca-certificates \
+        curl \
+        git \
+        lsb-release \
+        sudo \
+        tmux \
+        vim \
+        yadm \
+        zsh \
+        ####
+        # Python development tools
+        # python3-dbus \
+        python3-dbg \
+        python3-dev \
+        python3-pip \
+        python3-setuptools \
+        python3-venv \
+        python3-wheel \
+        ####
+        # Python2 development tools
+        # python-dbg \
+        # python-dbus \
+        # python-dev \
+        # python-gobject \
+        # python-pip \
+        # python-setuptools \
+        # python-wheel \
+        #
+        ####
+        # Yocto
+        # https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#ubuntu-packages
+        build-essential \
+        chrpath \
+        cpio \
+        debianutils \
+        diffstat \
+        gawk \
+        gcc-multilib \
+        git-core \
+        iputils-ping \
+        python \
+        python3 \
+        python3-pexpect \
+        python3-pip \
+        socat \
+        texinfo \
+        unzip \
+        wget \
+        xz-utils \
+        # Other development tools
+        clang-format \
+    ####
+    # Additional tools installed with pip
+    && pip3 install --no-cache-dir \
+        pre-commit \
+        virtualenvwrapper \
+        datalad \
+        autopep8 \
+    #
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # ngnetzky-ubuntu-etc-skel
 RUN cd '/etc/skel/' \
@@ -114,53 +186,25 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
 # WIP Layers
 ####
 
+# ngnetzky-ubuntu-apt-layer2-special-or-wip
 # mainstream apt packages that I use frequently
-####RUN apt-get --quiet --yes update \
-####    && apt-get -y install --no-install-recommends \
-####        #
-####        # Core development tools
-####        bash \
-####        build-essential \
-####        ca-certificates \
-####        curl \
-####        git \
-####        lsb-release \
-####        sudo \
-####        tmux \
-####        vim \
-####        yadm \
-####        zsh \
-####        #
-####        # Python development tools
-####        python3-dbg \
-####        python3-dbus \
-####        python3-dev \
-####        python3-pip \
-####        python3-setuptools \
-####        python3-wheel \
-####        \
-####        # Python2 development tools
-####        python-dbg \
-####        python-dbus \
-####        python-dev \
-####        python-gobject \
-####        python-pip \
-####        python-setuptools \
-####        python-wheel \
-####        # Other development tools
-####        clang-format \
-####        tcl \
-####    #
-####    # Additional tools installed with pip
-####    && pip install \
-####        pre-commit \
-####        tox \
-####        virtualenvwrapper \
-####    #
-####    # Clean up
-####    && apt-get autoremove -y \
-####    && apt-get clean -y \
-####    && rm -rf /var/lib/apt/lists/*
+RUN apt-get --quiet --yes update \
+    && apt-get -y install --no-install-recommends \
+        shellcheck \
+    ####
+    # Additional tools installed with pip
+    && pip3 install --no-cache-dir \
+        cookiecutter \
+        jupyter-repo2docker \
+        jupytext \
+        papermill \
+        ptpython \
+        tmuxp \
+    #
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
 ####ARG USER_REF='origin/ngenetzky/novo'
 ####USER "${USER_NAME}"
@@ -183,6 +227,9 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
 ####    -C "/home/${USER_NAME}" \
 ####    ./
 
+####
+# WIP Layers
+################################################################################
 
 ################################################################################
 # phusion magic
