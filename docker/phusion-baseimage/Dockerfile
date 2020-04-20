@@ -28,7 +28,7 @@ COPY .docker/phusion/rootfs/ /
 # No Debian that's a bad Debian! We don't have an interactive prompt don't fail
 ARG DEBIAN_FRONTEND=noninteractive
 
-# ngnetzky-ubuntu-
+# ngnetzky-ubuntu-apt-layer0
 # We don't use phusion's "install_clean" because we want portability.
 RUN apt-get --quiet --yes update \
     # We first install these packages
@@ -59,6 +59,18 @@ RUN apt-get --quiet --yes update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# ngnetzky-ubuntu-etc-skel
+RUN cd '/etc/skel/' \
+    # Configure vim with sensible defaults.
+    && curl -o '/etc/skel/.vimrc' \
+        'https://raw.githubusercontent.com/tpope/vim-sensible/2d9f34c09f548ed4df213389caa2882bfe56db58/plugin/sensible.vim' \
+    # Configure bash with sensible defaults.
+    && curl -o '/usr/local/share/bash-sensible.bash' \
+        "https://raw.githubusercontent.com/mrzool/bash-sensible/5a2269a6a12e2a1b10629bb223f2f3c27ac07050/sensible.bash" \
+    && ( \
+        printf 'f=%s && [[ -f $f ]] && source $f' \
+            "'/usr/local/share/bash-sensible.bash'" \
+    ) >> '/etc/skel/.bashrc'
 
 # Configuration for default non-root user.
 ARG USER_NAME='user'
@@ -89,9 +101,14 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
         "/home/$USER_NAME/bin" \
         "/home/$USER_NAME/.local/bin" \
         # vscode remote-container support
+        "/home/$USER_NAME/workspace/" \
         "/home/$USER_NAME/.vscode-server" \
         "/home/$USER_NAME/.vscode-server/bin" \
-        "/home/$USER_NAME/.vscode-server/extensions"
+        "/home/$USER_NAME/.vscode-server/extensions" \
+    && install -d --mode 0775 --owner "${USER_UID}" --group "${USER_GID}" \
+        # vscode remote-container support
+        "/workspace/" \
+        "/workspaces/"
 
 ################################################################################
 # WIP Layers
