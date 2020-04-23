@@ -1,3 +1,13 @@
+# phusion-ngenetzky Dockerfile
+
+# References
+# - https://github.com/NGenetzky/iac/
+# - https://medium.com/@tonistiigi/advanced-multi-stage-build-patterns-6f741b852fae
+
+##################################################################################
+##################################################################################
+# FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
+#
 # Use phusion/baseimage as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
 #
@@ -8,70 +18,52 @@
 # |   18.04    |  0.11   | released on Aug 16, 2018 |
 # |   16.04    | 0.9.22  | released on May 17, 2017 |
 #
-FROM phusion/baseimage:0.11
+#########
+#########
 
-# Add apt repository from neuro debian
-# "http://neuro.debian.net/lists/bionic.us-tn.full"
-# Install ppa key for 'neurodebian' so that we can install the
-# latest 'git-annex' (Ubuntu 18.04 only has 6.20180227-1).
-# http://neuro.debian.net/install_pkg.html?p=git-annex-standalone
-# WARNING: Building this layer can fail sporadically.
-RUN curl \
-        -o "/etc/apt/sources.list.d/neurodebian.sources.list" \
-            "http://neuro.debian.net/lists/bionic.us-tn.full" \
-    && apt-key adv --recv-keys \
-        --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9
+FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
+COPY .docker/phusion/rootfs/ /
 
 # Using "ARG" influences the behavior of apt only while building container.
 # No Debian that's a bad Debian! We don't have an interactive prompt don't fail
 ARG DEBIAN_FRONTEND=noninteractive
 
+# ngnetzky-ubuntu-apt-layer0-base
 # We don't use phusion's "install_clean" because we want portability.
 RUN apt-get --quiet --yes update \
-    # We first install these packages, to avoid skipping package configuration
+    # We first install these packages
+    # 'apt-utils dialog' to avoid skipping package configuration
+    # 'git' so that we can configure etckeeper
+    # 'sudo' so that we can add users to it below.
     && apt-get -y install --no-install-recommends \
         apt-utils \
         dialog \
-    # Then we can proceed with our minimal packages
-    && apt-get -y install --no-install-recommends \
-    # # Basic tools
+        git \
         sudo \
-        tmux \
-        vim \
+    && git config --system \
+        user.name 'Nathan Genetzky' \
+    && git config --system \
+        user.email 'nathan@genetzky.us' \
+    && ( \
+        cd etc/ \
+        && git init \
+        && git remote add origin \
+            'https://github.com/NGenetzky/etckeeper-base-etc' \
+        && git pull 'origin' 'master' \
+    ) \
+    && apt-get -y install --no-install-recommends \
+        # etckeeper should be installed after configuring things above
+        etckeeper \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-################################################################################
-# phusion magic
-#
-# phusion specific magic starts here. Must use FROM 'phusion/*'.
-#
-# - init scripts (/etc/my_init.d/)
-# - init process (/sbin/my_init)
-#
-####
-RUN install -d \
-    '/etc/entrypoint.d/' \
-    '/etc/my_init.d/'
-
-# Use baseimage-docker's init to execute our custom entrypoint.
-COPY entrypoint.sh /sbin/entrypoint
-COPY entrypoint.d/ /etc/entrypoint.d/
-ENTRYPOINT ["/sbin/my_init", "--", "/sbin/entrypoint"]
-
-# phusion specific magic ends here.
-################################################################################
-
-################################################################################
-# WIP Layers
-####
-
+# ngnetzky-ubuntu-apt-layer1-main
 # mainstream apt packages that I use frequently
 RUN apt-get --quiet --yes update \
     && apt-get -y install --no-install-recommends \
-        #
+        ####
         # Core development tools
         bash \
         build-essential \
@@ -84,47 +76,79 @@ RUN apt-get --quiet --yes update \
         vim \
         yadm \
         zsh \
-        #
+        ####
         # Python development tools
+        # python3-dbus \
         python3-dbg \
-        python3-dbus \
         python3-dev \
         python3-pip \
         python3-setuptools \
+        python3-venv \
         python3-wheel \
-        \
+        ####
         # Python2 development tools
-        python-dbg \
-        python-dbus \
-        python-dev \
-        python-gobject \
-        python-pip \
-        python-setuptools \
-        python-wheel \
+        # python-dbg \
+        # python-dbus \
+        # python-dev \
+        # python-gobject \
+        # python-pip \
+        # python-setuptools \
+        # python-wheel \
         #
-        # Install git-annex and datalad
-        git-annex-standalone \
-        datalad \
+        ####
+        # Yocto
+        # https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#ubuntu-packages
+        build-essential \
+        chrpath \
+        cpio \
+        debianutils \
+        diffstat \
+        gawk \
+        gcc-multilib \
+        git-core \
+        iputils-ping \
+        python \
+        python3 \
+        python3-pexpect \
+        python3-pip \
+        socat \
+        texinfo \
+        unzip \
+        wget \
+        xz-utils \
         # Other development tools
         clang-format \
-        tcl \
-    #
+    ####
     # Additional tools installed with pip
-    && pip install \
+    && pip3 install --no-cache-dir \
         pre-commit \
-        tox \
         virtualenvwrapper \
+        datalad \
+        autopep8 \
     #
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+# ngnetzky-ubuntu-etc-skel
+RUN cd '/etc/skel/' \
+    # Configure vim with sensible defaults.
+    && curl -o '/etc/skel/.vimrc' \
+        'https://raw.githubusercontent.com/tpope/vim-sensible/2d9f34c09f548ed4df213389caa2882bfe56db58/plugin/sensible.vim' \
+    # Configure bash with sensible defaults.
+    && curl -o '/usr/local/share/bash-sensible.bash' \
+        "https://raw.githubusercontent.com/mrzool/bash-sensible/5a2269a6a12e2a1b10629bb223f2f3c27ac07050/sensible.bash" \
+    && ( \
+        printf 'f=%s && [[ -f $f ]] && source $f' \
+            "'/usr/local/share/bash-sensible.bash'" \
+    ) >> '/etc/skel/.bashrc'
+
 # Configuration for default non-root user.
 ARG USER_NAME='user'
 ARG USER_UID='1000'
 ARG USER_GID="$USER_UID"
-ARG USER_SHELL='/usr/bin/zsh'
+ARG USER_SHELL='/bin/bash'
 # Create non-root user and give them sudo with nopasswd.
 RUN printf "### Building image for user %s (%s:%s) ###" \
         "${USER_NAME}" \
@@ -139,44 +163,143 @@ RUN printf "### Building image for user %s (%s:%s) ###" \
         "${USER_NAME}" \
     #
     # Add sudo support for the non-root user
-    && apt-get install -y sudo \
     && echo "$USER_NAME ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/$USER_NAME" \
     && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
     #
-    # Special steps for vscode remote-container support
-    && install -d --mode 0777 --owner "${USER_UID}" --group "${USER_GID}" \
-        "/workspace/" \
-        \
-        '/root/.vscode-server/' \
-        '/root/.vscode-server/bin/' \
-        '/root/.vscode-server/extensions' \
-        \
+    # Setup directories for home user
+    && install -d --mode 0755 --owner "${USER_UID}" --group "${USER_GID}" \
+        # 'bin' for XDG Base Directory Specification
+        # https://www.freedesktop.org/software/systemd/man/file-hierarchy.html#Home%20Directory
+        "/home/$USER_NAME/bin" \
+        "/home/$USER_NAME/.local/" \
+        "/home/$USER_NAME/.local/bin" \
+        "/home/$USER_NAME/.local/share" \
+        # vscode remote-container support
+        "/home/$USER_NAME/workspace/" \
         "/home/$USER_NAME/.vscode-server" \
         "/home/$USER_NAME/.vscode-server/bin" \
-        "/home/$USER_NAME/.vscode-server/extensions"
+        "/home/$USER_NAME/.vscode-server/extensions" \
+    && install -d --mode 0775 --owner "${USER_UID}" --group "${USER_GID}" \
+        # vscode remote-container support
+        "/workspace/" \
+        "/workspaces/"
 
-ARG USER_REF='origin/ngenetzky/novo'
-USER "${USER_NAME}"
-ARG HOME="/home/${USER_NAME}"
-RUN rm \
-        "${HOME}/.bash_logout" \
-        "${HOME}/.bashrc" \
-        "${HOME}/.profile" \
-    && install -m 700 -d \
-        "${HOME}/.ssh" \
-    && yadm clone 'https://github.com/NGenetzky/home.git' \
-    && yadm checkout 'origin/ngenetzky/novo' -b "live/$(hostname)" \
-    && "${HOME}/.yadm/bootstrap" \
-    # TODO: This should be in bootstrap
-    && zsh -c 'source ~/.zshrc'
+# # ngnetzky-user-ssh-authorized_keys-from-github
+# ARG URL_KEYS="https://github.com/NGenetzky.keys"
+# RUN \
+#     echo "AllowAgentForwarding yes" >> '/etc/ssh/sshd_config' \
+#     ## ssh authorized key management
+#     && install -m '0700' \
+#         -o "${USER_UID}" -g "${USER_GID}" \
+#         -d "/home/${USER_NAME}/.ssh/" \
+#     && wget "${URL_KEYS}" \
+#         -O "/home/${USER_NAME}/.ssh/github-ngenetzky.keys" \
+#     && install -T -m '0600' \
+#         -o "${USER_UID}" -g "${USER_GID}" \
+#         "/home/${USER_NAME}/.ssh/github-ngenetzky.keys" \
+#         "/home/${USER_NAME}/.ssh/authorized_keys" \
+#     #####
+#     # WARNING: Phusion magic here
+#     && rm -f '/etc/service/sshd/down' \
+#     # Regenerate SSH host keys. baseimage-docker does not contain any, so you
+#     # have to do that yourself. You may also comment out this instruction; the
+#     # init system will auto-generate one during boot.
+#     && '/etc/my_init.d/00_regen_ssh_host_keys.sh'
+# EXPOSE 22
+
+################################################################################
+# WIP Layers
+####
+
+# ngnetzky-ubuntu-apt-layer2-special-or-wip
+RUN apt-get --quiet --yes update \
+    && apt-get -y install --no-install-recommends \
+        shellcheck \
+    ####
+    # Additional tools installed with pip
+    && pip3 install --no-cache-dir \
+        cookiecutter \
+        ipykernel \
+        jupyter \
+        jupyter-repo2docker \
+        jupytext \
+        nbconvert \
+        papermill \
+        ptpython \
+        pylint \
+        tmuxp \
+    #
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# ngnetzky-ubuntu-docker
+RUN apt-get --quiet --yes update \
+    && apt-get -y install --no-install-recommends \
+        docker-compose \
+        docker.io \
+        git \
+        iproute2 \
+        procps \
+    ####
+    # Additional tools installed with pip
+    && pip3 install --no-cache-dir \
+        docker \
+    ####
+    # Enable the main user to use docker
+    && usermod -a -G "docker" "${USER_NAME}" \
+    #
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+####ARG USER_REF='origin/ngenetzky/novo'
+####USER "${USER_NAME}"
+####ARG HOME="/home/${USER_NAME}"
+####RUN rm \
+####        "${HOME}/.bash_logout" \
+####        "${HOME}/.bashrc" \
+####        "${HOME}/.profile" \
+####    && install -m 700 -d \
+####        "${HOME}/.ssh" \
+####    && yadm clone 'https://github.com/NGenetzky/home.git' \
+####    && yadm checkout 'origin/ngenetzky/novo' -b "live/$(hostname)" \
+####    && "${HOME}/.yadm/bootstrap" \
+####    # TODO: This should be in bootstrap
+####    && zsh -c 'source ~/.zshrc'
+
+# Archive the home directory in case user want's to mount over it.
+####RUN tar -vcap \
+####    -f "/usr/share/home-${USER_NAME}.tar.xz" \
+####    -C "/home/${USER_NAME}" \
+####    ./
+
+####
+# WIP Layers
+################################################################################
+
+################################################################################
+# phusion magic
+#
+# phusion specific magic starts here. Must use FROM 'phusion/*'.
+#
+# - init scripts (/etc/my_init.d/)
+# - init process (/sbin/my_init)
+# - entrypoint (/sbin/entrypoint)
+#
+# NOTE: '/sbin/entrypoint' was added by ngenetzky not phusion.
+####
 
 USER root
 
-# Archive the home directory in case user want's to mount over it.
-RUN tar -vcap \
-    -f "/usr/share/home-${USER_NAME}.tar.xz" \
-    -C "/home/${USER_NAME}" \
-    ./
+# Use baseimage-docker's init to execute our custom entrypoint.
+ENTRYPOINT ["/sbin/my_init", "--", "/sbin/entrypoint"]
+
+####
+# phusion magic
+################################################################################
 
 ################################################################################
 # docker metadata
@@ -194,7 +317,7 @@ RUN tar -vcap \
 # IMAGE_NAME: the name and tag of the Docker repository being built. (This variable is a combination of DOCKER_REPO:DOCKER_TAG.)
 ARG SOURCE_BRANCH='unknown-branch'
 ARG SOURCE_COMMIT='unknown-commit'
-ARG DOCKER_REPO='ngenetzky/phusion-base'
+ARG DOCKER_REPO='ngenetzky/phusion-ngenetzky'
 ARG DOCKERFILE_PATH='Dockerfile'
 ARG DOCKER_TAG='latest'
 ARG IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
@@ -207,9 +330,6 @@ ARG BUILD_DATE='unknown-date'
 ARG META_VCS_URL='https://github.com/ngenetzky/iac/'
 ARG META_SUMMARY='Image built ontop of phusion-baseimage'
 ARG META_MAINTAINER='Nathan Genetzky <n@genetzky.us>'
-
-# Yocto Metadata
-# https://wiki.yoctoproject.org/wiki/Releases
 
 # Build-time metadata as defined at http://label-schema.org
 LABEL \
