@@ -1,0 +1,3 @@
+[submodule "external/packer-qemu-templates"]
+	path = external/packer-qemu-templates
+	url = git@github.com:jakobadam/packer-qemu-templates.git
