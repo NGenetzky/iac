@@ -1,3 +1,0 @@
-[submodule "external/ansible_playbook"]
-	path = external/ansible_playbook
-	url = git@github.com:philm/ansible_playbook.git
