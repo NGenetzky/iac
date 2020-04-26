@@ -5,4 +5,5 @@ services:
     volumes:
       # - ~/.ssh/id_rsa:/root/.ssh/id_rsa
       # - ~/.ssh/id_rsa.pub:/home/user/.ssh/id_rsa.pub
+      # - ./build/log/:/var/log/ansible/ansible.log
       - .:/home/user/ansible/

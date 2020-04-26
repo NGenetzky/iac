@@ -1,5 +1,46 @@
 ---
 - hosts: local
   connection: local
+
+  ## Facts Gathering
+  ## https://medium.com/@abhijeet.kamble619/10-things-you-should-start-using-in-your-ansible-playbook-808daff76b65
+  # gather_subset: network
+  gather_facts: False
+
+  ## Debugging
+  ## https://medium.com/@abhijeet.kamble619/10-things-you-should-start-using-in-your-ansible-playbook-808daff76b65
+  ## P task/host/result/vars ->Prints the value to executed a module
+  ## task.args[key] = value — upgrade the module arguments
+  ## vars[args]=value — set argument value
+  ## r(edo) — run the task again
+  ## c(continue) — Just continue
+  ## q(uit) — quit from debugger
+  # strategy: debug
+
+  vars:
+    cloud_init__dest: "{{playbook_dir}}/build/cloud_init/"
+
   tasks:
-  - debug: msg="it works!"
+  - debug:
+      msg: "Executing in {{playbook_dir}}"
+
+  - file:
+      path: "{{cloud_init__dest}}/"
+      state: directory
+
+  - name: Set authorized key without validating the TLS/SSL certificates
+    authorized_key:
+      user: "user"
+      path: "{{cloud_init__dest}}/authorized_keys"
+      state: present
+      key: https://github.com/ngenetzky.keys
+
+  # References:
+  # - https://wiki.ubuntu.com/FoundationsTeam/AutomatedServerInstalls
+  # - https://wiki.ubuntu.com/FoundationsTeam/AutomatedServerInstalls/QuickStart
+  - template:
+      src: cloud_init__user_data.yml.j2
+      dest: "{{cloud_init__dest}}/user-data"
+  - template:
+      src: cloud_init__meta_data.yml.j2
+      dest: "{{cloud_init__dest}}/meta-data"
