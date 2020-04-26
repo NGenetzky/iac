@@ -1,53 +1,68 @@
 #cloud-config
+#https://github.com/number5/cloud-init/blob/master/doc/examples/cloud-config.txt
 
-# This is the user-data configuration file for cloud-init. By default this sets
-# up an initial user called "ubuntu" with password "ubuntu", which must be
-# changed at first login. However, many additional actions can be initiated on
-# first boot from this file. The cloud-init documentation has more details:
-#
-# https://cloudinit.readthedocs.io/
-#
-# Some additional examples are provided in comments below the default
-# configuration.
+# chpasswd:
+#   expire: true
+#   list:
+#   - ubuntu:ubuntu
 
-# On first boot, set the (default) ubuntu user's password to "ubuntu" and
-# expire user passwords
-chpasswd:
-  expire: true
-  list:
-  - ubuntu:ubuntu
+# Enable password authentication with the SSH daemon. No.
+ssh_pwauth: false
 
-# Enable password authentication with the SSH daemon
-ssh_pwauth: true
-
-## On first boot, use ssh-import-id to give the specific users SSH access to
-## the default user
-#ssh_import_id:
-#- lp:my_launchpad_username
-#- gh:my_github_username
+# ssh_import_id:
+# - gh:ngenetzky
 
 ## Add users and groups to the system, and import keys with the ssh-import-id
 ## utility
-#groups:
-#- robot: [robot]
-#- robotics: [robot]
-#- pi
-#
-#users:
-#- default
-#- name: robot
-#  gecos: Mr. Robot
-#  primary_group: robot
-#  groups: users
-#  ssh_import_id: foobar
-#  lock_passwd: false
-#  passwd: $5$hkui88$nvZgIle31cNpryjRfO9uArF7DYiBcWEnjqq7L1AQNN3
+# groups:
+# - robot: [robot]
+# - robotics: [robot]
+
+users:
+# - default # NOTE: Replacing 'default' with 'user'
+- name: user
+  primary_group: user
+  ssh_import_id: "gh:ngenetzky"
+  uid: "1000"
+
+- name: ngenetzky
+  groups: user, users, admin, adm, dialout, sudo, lxd, plugdev, netdev
+  ssh_import_id: gh:ngenetzky
+  uid: "1337"
+
+- name: builder
+  ssh_import_id: gh:ngenetzky
+  uid: "2000"
+
+- name: support
+  groups: admin, adm, sudo
+  ssh_import_id: gh:ngenetzky
+  uid: "3000"
+  sudo: ALL=(root) NOPASSWD:ALL
+
+# resize_rootfs should the / filesytem be resized on first boot
+# this allows you to launch an instance with a larger disk / partition
+# and have the instance automatically grow / to accomoddate it
+# set to 'False' to disable
+# by default, the resizefs is done early in boot, and blocks
+# if resize_rootfs is set to 'noblock', then it will be run in parallel
+resize_rootfs: True
+
+## hostname and /etc/hosts management
+# Set the hostname and FQDN
+hostname: "ryder"
+fqdn: "ryder.genetzky.us"
+# Set our hostname in /etc/hosts too
+manage_etc_hosts: true
+
+# timezone: set the timezone for this instance
+# the value of 'timezone' must exist in /usr/share/zoneinfo
+timezone: US/Central
 
 ## Update apt database and upgrade packages on first boot
-#package_update: true
-#package_upgrade: true
+package_update: true
+package_upgrade: true
 
-## Install additional packages on first boot
 #packages:
 #- pwgen
 #- pastebinit
