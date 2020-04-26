@@ -1,0 +1,8 @@
+version: '3'
+services:
+  main:
+    build: ./
+    volumes:
+      # - ~/.ssh/id_rsa:/root/.ssh/id_rsa
+      # - ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub
+      - .:/ansible/playbooks
