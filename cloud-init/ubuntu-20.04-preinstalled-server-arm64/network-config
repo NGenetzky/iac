@@ -12,19 +12,13 @@ ethernets:
   eth0:
     dhcp4: true
     optional: true
-#wifis:
-#  wlan0:
-#    dhcp4: true
-#    optional: true
-#    access-points:
-#      myhomewifi:
-#        password: "S3kr1t"
-#      myworkwifi:
-#        password: "correct battery horse staple"
-#      workssid:
-#        auth:
-#          key-management: eap
-#          method: peap
-#          identity: "me@example.com"
-#          password: "passw0rd"
-#          ca-certificate: /etc/my_ca.pem
+
+# https://netplan.io/reference#properties-for-device-type-wifis
+wifis:
+  wlan0:
+    dhcp4: true
+    optional: true
+    access-points:
+
+      nate-5G:
+        password: ""
