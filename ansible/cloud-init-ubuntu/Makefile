@@ -41,8 +41,8 @@ c :=
 c_single := $(if $(c),$(c),$(C_SINGLE_DEFAULT))
 
 ## u='--user UID:GID' or if u='' then use user set by image.
-# u := --user '$(shell id -u):$(shell id -g)'
-u := 
+u := --user '$(shell id -u):$(shell id -g)'
+# u :=
 
 #
 # targets

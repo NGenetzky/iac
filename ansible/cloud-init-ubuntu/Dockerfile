@@ -27,14 +27,43 @@ RUN \
   tar -xzf ansible.tar.gz -C ansible --strip-components 1 && \
   rm -fr ansible.tar.gz /ansible/docs /ansible/examples /ansible/packaging
 
-RUN mkdir -p /ansible/playbooks
-WORKDIR /ansible/playbooks
+# Configuration for default non-root user. [alpine busybox]
+ARG USER_NAME='user'
+ARG USER_UID='1000'
+ARG USER_GID="$USER_UID"
+ARG USER_SHELL='/bin/bash'
+# Create non-root user and give them sudo with nopasswd.
+RUN printf "### Building image for user %s (%s:%s) ###" \
+        "${USER_NAME}" \
+        "${USER_UID}" \
+        "${USER_GID}" \
+    #
+    # Create a non-root user. No password (-D).
+    && adduser -D -s "${USER_SHELL}" -u "${USER_UID}" "${USER_NAME}" \
+    #
+    # Add sudo support for the non-root user
+    # && echo "$USER_NAME ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/$USER_NAME" \
+    # && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
+    #
+    # Setup directories for home user
+    # && install -d --mode 0755 --owner "${USER_UID}" --group "${USER_GID}" \
+    && install -d -m 0755 -o "${USER_UID}" -g "${USER_GID}" \
+        # 'bin' for XDG Base Directory Specification
+        # https://www.freedesktop.org/software/systemd/man/file-hierarchy.html#Home%20Directory
+        "/home/$USER_NAME/bin" \
+        "/home/$USER_NAME/.local/" \
+        "/home/$USER_NAME/.local/bin" \
+        "/home/$USER_NAME/.local/share" \
+        # ansible
+        "/home/$USER_NAME/ansible/"
 
-ENV ANSIBLE_GATHERING smart
-ENV ANSIBLE_HOST_KEY_CHECKING false
-ENV ANSIBLE_RETRY_FILES_ENABLED false
-ENV ANSIBLE_ROLES_PATH /ansible/playbooks/roles
-ENV ANSIBLE_SSH_PIPELINING True
+WORKDIR "/home/$USER_NAME/ansible/"
+
+# ENV ANSIBLE_GATHERING smart
+# ENV ANSIBLE_HOST_KEY_CHECKING false
+# ENV ANSIBLE_RETRY_FILES_ENABLED false
+# ENV ANSIBLE_ROLES_PATH /ansible/playbooks/roles
+# ENV ANSIBLE_SSH_PIPELINING True
 ENV PATH /ansible/bin:$PATH
 ENV PYTHONPATH /ansible/lib
 

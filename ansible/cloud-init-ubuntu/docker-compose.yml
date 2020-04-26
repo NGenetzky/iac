@@ -4,5 +4,5 @@ services:
     build: ./
     volumes:
       # - ~/.ssh/id_rsa:/root/.ssh/id_rsa
-      # - ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub
-      - .:/ansible/playbooks
+      # - ~/.ssh/id_rsa.pub:/home/user/.ssh/id_rsa.pub
+      - .:/home/user/ansible/
