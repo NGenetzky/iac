@@ -1,0 +1,3 @@
+[submodule "ansible/cookiecutter/0/cookiecutter-ansible-playbook"]
+	path = ansible/cookiecutter/0/cookiecutter-ansible-playbook
+	url = https://github.com/inhumantsar/cookiecutter-ansible-playbook.git
