@@ -17,8 +17,8 @@ check-env:
 
 build/virtualenv/.built: requirements.txt
 	rm -rf build/virtualenv
-	virtualenv build/virtualenv
-	. build/virtualenv/bin/activate && pip install -r requirements.txt
+	virtualenv -p python3 build/virtualenv
+	./build/virtualenv/bin/pip3 install -r requirements.txt
 	touch $@
 
 build/galaxy/.built: requirements.yml
