@@ -1,0 +1,5 @@
+---
+- name: "ngenetzky-nas v0.1.0 - ngenetzky uses ansible-nas"
+  hosts: all
+  tasks: []
+  roles: []
