@@ -1,6 +1,9 @@
 ---
-#
-# Ansible Galaxy modules
-#
-- src: rvm_io.rvm1-ruby
-  version: v1.3.8
+- name: geerlingguy.docker
+  version: 2.5.2
+
+- name: bertvv.samba
+  version: v2.7.0
+
+- name: geerlingguy.nfs
+  version: 1.5.0
