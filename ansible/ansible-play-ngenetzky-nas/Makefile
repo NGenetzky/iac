@@ -27,8 +27,8 @@ build/galaxy/.built: requirements.yml
 	ansible-galaxy install -r requirements.yml
 	touch $@
 
-test:
+lint:
 	@$(MAKE) check-env
-	ansible-playbook site.yml --syntax-check
-	ansible-lint --exclude build/ site.yml
+	ansible-playbook playbook.yml --syntax-check
+	ansible-lint --exclude build/ playbook.yml
 .PHONY: test
