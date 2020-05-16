@@ -24,13 +24,11 @@ help() {
 Options:
   --env ENV             Environment to deploy
                         Defaults to vagrant
-  --initial             Prepare new instances for deploy
-                        Implies --really-reboot
-  --really-reboot       If scripts detect a reboot is required, reboot
 EOF
 }
 
-: "${ENV:=vagrant}"
+_DEFAULT_ENV='local'
+: "${ENV:=${_DEFAULT_ENV}}"
 : "${EXTRA:=}"
 
 while test $# -gt 0; do
@@ -45,18 +43,6 @@ while test $# -gt 0; do
     --env)
       ENV=$2
       shift 2
-      ;;
-    --really-reboot)
-      EXTRA="-e really_reboot=True"
-      shift 1
-      ;;
-    --initial|--init)
-      #
-      # New instances only have the `vagrant` user, so we'll have to deploy
-      # using that. And intial deployments are the best time to reboot.
-      #
-      EXTRA="--user vagrant ${EXTRA} -e really_reboot=True --tags initial"
-      shift 1
       ;;
     --help)
       help
@@ -80,8 +66,8 @@ source activate.sh
 
 set -ex
 exec ansible-playbook \
-  -v \
+  --verbose \
   --diff \
-  --inventory-file ./inventory/${ENV}.ini \
+  --inventory "./envs/${ENV}/" \
   "$@" \
-  -- site.yml
+  -- playbook.yml
