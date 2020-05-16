@@ -1,0 +1,4 @@
+## Enable some applications
+heimdall_enabled: true
+portainer_enabled: true
+

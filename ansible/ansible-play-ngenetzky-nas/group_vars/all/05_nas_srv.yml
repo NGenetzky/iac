@@ -7,14 +7,16 @@
 ##     a n s i b l e - n a s      https://github.com/davestephens/ansible-nas
 ###
 
+nas__root: '/srv/nas'
+
 ###
 ### Docker
 ###
 # Where you want Docker to store images
-docker_image_directory: "{{ docker_home }}/data"
+docker_image_directory: "/var/lib/docker" # NOTE: I disabled this task as well.
 
 # Where you want Docker to store its container data.
-docker_home: /mnt/Volume2/docker
+docker_home: "{{nas__root}}/docker"
 
 # Docker storage driver, see https://docs.docker.com/storage/storagedriver/select-storage-driver/#supported-backing-filesystems
 # You might want to change this to ZFS, depending on your underlying filesystem.
@@ -24,7 +26,7 @@ docker_storage_driver: overlay2
 ###
 # The location where all shares will be created by default. Can be overridden on a per-share basis.
 # This path will be mounted to backup containers, Duplicati
-samba_shares_root: /mnt/Volume3
+samba_shares_root: "{{nas__root}}/samba"
 
 # Where stuff downloaded will be stored
 downloads_root: "{{ samba_shares_root }}/downloads"
@@ -145,7 +147,7 @@ samba_shares:
 # https://help.ubuntu.com/community/SettingUpNFSHowTo#Shares
 # WARNING: Weird things might happen if you share the same data over Samba and NFS and allow writes on both!
 
-nfs_shares_root: /mnt/Volume3
+nfs_shares_root: "{{nas__root}}/nfs"
 
 nfs_exports:
   - "{{ nfs_shares_root }}/public *(rw,sync,no_root_squash)"
