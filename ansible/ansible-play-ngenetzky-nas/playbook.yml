@@ -19,6 +19,15 @@
       docker_users:
       - "{{ ansible_nas_user }}"
 
+  - role: geerlingguy.pip
+    tags:
+      - docker
+      - skip_ansible_lint
+    vars:
+      pip_executable: pip3
+      pip_install_packages:
+        - name: docker
+
   - role: geerlingguy.nfs
     tags:
       - nfs
