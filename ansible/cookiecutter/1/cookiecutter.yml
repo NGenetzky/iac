@@ -1,0 +1,17 @@
+
+default_context:
+
+    ################################################################################
+    # github.com/inhumantsar/cookiecutter-ansible-playbook/
+
+    # Full reference with defaults
+    # https://github.com/building5/simply-ansible/blob/7d459f3f4bb07adb3bd3733ff6c163425874ccaf/cookiecutter.json
+    #  "project_name": "Simply Ansible",
+    #   "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+    #   "description": "Ansible scripts for {{ cookiecutter.project_name }}.",
+    #   "license": ["ISC License", "MIT license", "BSD license", "Apache Software License 2.0", "GNU General Public License v3", "Not open source"],
+
+    project_name: "ngenetzky-ansible"
+    license: "MIT"
+
+    ################################################################################
