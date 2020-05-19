@@ -1,0 +1,27 @@
+---
+
+
+nas_srv:
+
+  children:
+
+    nas_srv_m0:
+      hosts:
+        beast: {}
+      vars:
+        nas__path:
+          # root: '/srv/nas'
+          samba: '/srv/nas/samba'
+          docker: '/srv/nas/docker'
+          nfs: '/srv/nas/nfs'
+
+
+desktop:
+  hosts:
+    beast: {}
+
+
+# lowest "ansible_group_priority"
+all:
+  hosts:
+    beast: {}
