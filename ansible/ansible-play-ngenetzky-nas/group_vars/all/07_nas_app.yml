@@ -1,0 +1,42 @@
+
+###
+### Ansible-NAS Applications
+###
+
+################################################################################
+# Enabled
+
+# Media Serving
+plex_enabled: "true"
+
+# Media Sourcing
+minidlna_enabled: "true"
+
+# System Management
+glances_enabled: "true"
+heimdall_enabled: "true"
+portainer_enabled: "true"
+
+# Backup & Restore
+nextcloud_enabled: "true"
+
+# Finance
+firefly_enabled: "true"
+
+# Home Automation
+homeassistant_enabled: "true"
+mosquitto_enabled: "true"
+
+################################################################################
+# External Access
+
+traefik_enabled: "true"
+
+firefly_available_externally: "true"
+glances_available_externally: "true"
+heimdall_available_externally: "true"
+nextcloud_available_externally: "true"
+plex_available_externally: "true"
+portainer_available_externally: "true"
+mosquitto_available_externally: "true"
+homeassistant_available_externally: "true"

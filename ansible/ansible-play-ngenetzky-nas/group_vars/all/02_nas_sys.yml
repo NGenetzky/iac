@@ -1,0 +1,31 @@
+##                       ._____.   .__
+##  _____    ____   _____|__\_ |__ |  |   ____             ____ _____    ______
+##  \__  \  /    \ /  ___/  || __ \|  | _/ __ \   ______  /    \\__  \  /  ___/
+##   / __ \|   |  \\___ \|  || \_\ \  |_\  ___/  /_____/ |   |  \/ __ \_\___ \
+##  (____  /___|  /____  >__||___  /____/\___  >         |___|  (____  /____  >
+##       \/     \/     \/        \/          \/               \/     \/     \/
+##     a n s i b l e - n a s      https://github.com/davestephens/ansible-nas
+###
+
+###
+### General
+###
+# Sets the hostname of your Ansible NAS
+ansible_nas_hostname: "{{ inventory_hostname }}"
+
+
+# Sets the timezone for your Ansible NAS
+# You can find a list here https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+ansible_nas_timezone: America/Chicago
+
+# Update all apt packages when playbook is run
+keep_packages_updated: false
+
+# Will be added to the docker group to give user command line access to docker
+ansible_nas_user: ngenetzky
+
+# Your email and domain, used for Let's Encrypt SSL certs
+ansible_nas_email: nathan@genetzky.us
+
+# Applications will have subdomain SSL certificates created if Traefik is enabled, e.g. ansible-nas.<your-domain>, nextcloud.<your-domain>
+ansible_nas_domain: m.genetzky.us

@@ -1,0 +1,213 @@
+---
+- import_tasks: ansible-nas/tasks/users.yml
+  tags: users
+
+# - import_tasks: ansible-nas/tasks/general.yml
+#   tags: general
+
+# - import_tasks: ansible-nas/tasks/docker.yml
+#   tags: docker
+
+- import_tasks: ansible-nas/tasks/portainer.yml
+  when: (portainer_enabled | default(False))
+  tags: portainer
+
+- import_tasks: ansible-nas/tasks/traefik.yml
+  when: (traefik_enabled | default(False))
+  tags: traefik
+
+- import_tasks: ansible-nas/tasks/heimdall.yml
+  when: (heimdall_enabled | default(False))
+  tags: heimdall
+
+- import_tasks: ansible-nas/tasks/organizr.yml
+  when: (organizr_enabled | default(False))
+  tags: organizr
+
+- import_tasks: ansible-nas/tasks/watchtower.yml
+  when: (watchtower_enabled | default(False))
+  tags: watchtower
+
+- import_tasks: ansible-nas/tasks/plex.yml
+  when: (plex_enabled | default(False))
+  tags: plex
+
+- import_tasks: ansible-nas/tasks/firefly.yml
+  when: (firefly_enabled | default(False))
+  tags: firefly
+
+- import_tasks: ansible-nas/tasks/emby.yml
+  when: (emby_enabled | default(False))
+  tags: emby
+
+- import_tasks: ansible-nas/tasks/tautulli.yml
+  when: (tautulli_enabled | default(False))
+  tags: tautulli
+
+- import_tasks: ansible-nas/tasks/transmission.yml
+  when: (transmission_enabled | default(False))
+  tags: transmission
+
+- import_tasks: ansible-nas/tasks/transmission_with_openvpn.yml
+  when: (transmission_with_openvpn_enabled | default(False))
+  tags: transmission
+
+- import_tasks: ansible-nas/tasks/pyload.yml
+  when: (pyload_enabled | default(False))
+  tags: pyload
+
+- import_tasks: ansible-nas/tasks/thelounge.yml
+  when: (thelounge_enabled | default(False))
+  tags: thelounge
+
+- import_tasks: ansible-nas/tasks/sonarr.yml
+  when: (sonarr_enabled | default(False))
+  tags: sonarr
+
+- import_tasks: ansible-nas/tasks/radarr.yml
+  when: (radarr_enabled | default(False))
+  tags: radarr
+
+- import_tasks: ansible-nas/tasks/glances.yml
+  when: (glances_enabled | default(False))
+  tags: glances
+
+- import_tasks: ansible-nas/tasks/netdata.yml
+  when: (netdata_enabled | default(False))
+  tags: netdata
+
+- import_tasks: ansible-nas/tasks/duplicati.yml
+  when: (duplicati_enabled | default(False))
+  tags: duplicati
+
+- import_tasks: ansible-nas/tasks/couchpotato.yml
+  when: (couchpotato_enabled | default(False))
+  tags: couchpotato
+
+- import_tasks: ansible-nas/tasks/sickchill.yml
+  when: (sickchill_enabled | default(False))
+  tags: sickchill
+
+- import_tasks: ansible-nas/tasks/znc.yml
+  when: (znc_enabled | default(False))
+  tags: znc
+
+- import_tasks: ansible-nas/tasks/miniflux.yml
+  when: (miniflux_enabled | default(False))
+  tags: miniflux
+
+- import_tasks: ansible-nas/tasks/nextcloud.yml
+  when: (nextcloud_enabled | default(False))
+  tags: nextcloud
+
+- import_tasks: ansible-nas/tasks/gitea.yml
+  when: (gitea_enabled | default(False))
+  tags: gitea
+
+- import_tasks: ansible-nas/tasks/gitlab.yml
+  when: (gitlab_enabled | default(False))
+  tags: gitlab
+
+- import_tasks: ansible-nas/tasks/timemachine.yml
+  when: (timemachine_enabled | default(False))
+  tags: timemachine
+
+- import_tasks: ansible-nas/tasks/stats.yml
+  when: (stats_enabled | default(False))
+  tags: stats
+
+- import_tasks: ansible-nas/tasks/guacamole.yml
+  when: (guacamole_enabled | default(False))
+  tags: guacamole
+
+- import_tasks: ansible-nas/tasks/airsonic.yml
+  when: (airsonic_enabled | default(False))
+  tags: airsonic
+
+- import_tasks: ansible-nas/tasks/cloudflare_ddns.yml
+  when: (cloudflare_ddns_enabled | default(False))
+  tags: cloudflare_ddns
+
+- import_tasks: ansible-nas/tasks/minidlna.yml
+  when: (minidlna_enabled | default(False))
+  tags: minidlna
+
+- import_tasks: ansible-nas/tasks/get_iplayer.yml
+  when: (get_iplayer_enabled | default(False))
+  tags: get_iplayer
+
+- import_tasks: ansible-nas/tasks/mymediaforalexa.yml
+  when: (mymediaforalexa_enabled | default(False))
+  tags: mymediaforalexa
+
+- import_tasks: ansible-nas/tasks/jackett.yml
+  when: (jackett_enabled | default(False))
+  tags: jackett
+
+- import_tasks: ansible-nas/tasks/joomla.yml
+  when: (joomla_enabled | default(False))
+  tags: joomla
+
+- import_tasks: ansible-nas/tasks/bitwarden.yml
+  when: (bitwarden_enabled | default(False))
+  tags: bitwarden
+
+- import_tasks: ansible-nas/tasks/nzbget.yml
+  when: (nzbget_enabled | default(False))
+  tags: nzbget
+
+- import_tasks: ansible-nas/tasks/wallabag.yml
+  when: (wallabag_enabled | default(False))
+  tags: wallabag
+
+- import_tasks: ansible-nas/tasks/mosquitto.yml
+  when: (mosquitto_enabled | default(False))
+  tags: mosquitto
+
+- import_tasks: ansible-nas/tasks/homebridge.yml
+  when: (homebridge_enabled | default(False))
+  tags: homebridge
+
+- import_tasks: ansible-nas/tasks/calibre.yml
+  when: (calibre_enabled | default(False))
+  tags: calibre
+
+- import_tasks: ansible-nas/tasks/homeassistant.yml
+  when: (homeassistant_enabled | default(False))
+  tags: homeassistant
+
+- import_tasks: ansible-nas/tasks/bazarr.yml
+  when: (bazarr_enabled | default(False))
+  tags: bazarr
+
+- import_tasks: ansible-nas/tasks/openhab.yml
+  when: (openhab_enabled | default(False))
+  tags: openhab
+
+- import_tasks: ansible-nas/tasks/jellyfin.yml
+  when: (jellyfin_enabled | default(False))
+  tags: jellyfin
+
+- import_tasks: ansible-nas/tasks/cloudcmd.yml
+  when: (cloudcmd_enabled | default(False))
+  tags: cloudcmd
+
+- import_tasks: ansible-nas/tasks/ubooquity.yml
+  when: (ubooquity_enabled | default(False))
+  tags: ubooquity
+
+- import_tasks: ansible-nas/tasks/ombi.yml
+  when: (ombi_enabled | default(False))
+  tags: ombi
+
+- import_tasks: ansible-nas/tasks/lidarr.yml
+  when: (lidarr_enabled | default(False))
+  tags: lidarr
+
+- import_tasks: ansible-nas/tasks/serposcope.yml
+  when: (serposcope_enabled | default(False))
+  tags: serposcope
+
+- import_tasks: ansible-nas/tasks/virtual_desktop.yml
+  when: (virtual_desktop_enabled | default(False))
+  tags: virtual_desktop
