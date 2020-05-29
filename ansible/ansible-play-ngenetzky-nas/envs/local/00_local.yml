@@ -4,7 +4,7 @@ all:
     local:
       ansible_ssh_host: localhost
       ansible_connection: local
-      # ansible_python_interpreter: "{{ansible_playbook_python}}"
+      ansible_python_interpreter: "{{ansible_playbook_python}}"
 
       nas__path:
         # root: '/srv/nas'
