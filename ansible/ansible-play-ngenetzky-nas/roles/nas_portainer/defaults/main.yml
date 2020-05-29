@@ -7,4 +7,4 @@ ansible_nas_domain: ''
 ###
 portainer_available_externally: "false"
 portainer_data_directory: "{{ docker_home }}/portainer/config"
-portainer_port: "9000"
+portainer_port: "127.0.0.1:9000" # NOTE: More secure than '9000'
