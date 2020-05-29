@@ -1,0 +1,11 @@
+---
+- name: "ngenetzky-nas v0.1.0 - traefik up"
+  hosts: all
+  # tasks: []
+  vars:
+    ansible_nas_domain: novo.genetzky.us
+    ansible_nas_email: nathan@genetzky.us
+    ansible_nas_hostname: 'novo'
+    traefik_enabled: true
+  roles:
+  - role: nas_traefik
