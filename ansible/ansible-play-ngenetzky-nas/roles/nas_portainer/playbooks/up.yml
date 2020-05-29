@@ -1,11 +1,9 @@
 ---
-- name: "ngenetzky-nas v0.1.0 - traefik up"
+- name: "ngenetzky-nas v0.1.0 - portainer up"
   hosts: all
   # tasks: []
   vars:
     ansible_nas_domain: novo.genetzky.us
-    ansible_nas_email: nathan@genetzky.us
-    ansible_nas_hostname: 'novo'
-    traefik_enabled: true
+    portainer_available_externally: "true"
   roles:
-  - role: nas_traefik
+  - role: nas_portainer

@@ -1,18 +1,10 @@
 # Default to parent dir of 'roles_path' that contains this role.
 docker_home: '{{ role_path }}/../../data/'
-
-ansible_nas_email: ''
-ansible_nas_hostname: "{{ inventory_hostname }}"
 ansible_nas_domain: ''
 
 ###
-### Traefik (https://github.com/davestephens/ansible-nas)
+### Portainer (https://github.com/davestephens/ansible-nas)
 ###
-traefik_data_directory: "{{ docker_home }}/traefik"
-traefik_debug: "false"
-traefik_docker_image: traefik:v1.7
-
-traefik_enabled: false
-traefik_port_http: "80"
-traefik_port_https: "443"
-traefik_port_ui: "8083"
+portainer_available_externally: "false"
+portainer_data_directory: "{{ docker_home }}/portainer/config"
+portainer_port: "9000"
