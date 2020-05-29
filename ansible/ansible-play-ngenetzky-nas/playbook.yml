@@ -1,8 +1,6 @@
 ---
 - name: "ngenetzky-nas v0.1.0 - ngenetzky uses ansible-nas"
   hosts: all
-  vars_files:
-  - build/ngenetzky-ansible-vault-vars.yml
   tasks: []
   roles:
 
