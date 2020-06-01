@@ -1,0 +1,15 @@
+---
+public_ngenetzky_openwrt:
+  hosts:
+    lucus.lan: {}
+  vars:
+    ansible_user: root
+    ansible_ssh_private_key_file: "~/.ssh/id_ed25519"
+
+# lowest "ansible_group_priority"
+all:
+  hosts:
+    lucus.lan: {}
+  vars:
+    # Using Python 3 on the managed machines with commands and playbooks
+    ansible_python_interpreter: /usr/bin/python3

@@ -1,0 +1,15 @@
+---
+public_ngenetzky_ha:
+  hosts:
+    homeassistant.local: {}
+  vars:
+    ansible_user: ngenetzky
+    ansible_ssh_private_key_file: "~/.ssh/id_ed25519"
+
+# lowest "ansible_group_priority"
+all:
+  hosts:
+    homeassistant.local: {}
+  vars:
+    # Using Python 3 on the managed machines with commands and playbooks
+    ansible_python_interpreter: /usr/bin/python3
