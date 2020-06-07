@@ -1,0 +1,13 @@
+- hosts: all
+  become: yes
+  gather_facts: no
+
+  vars:
+    # pip_package: python-pip3
+    pip_executable: pip3
+    pip_install_packages:
+      - name: docker
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
