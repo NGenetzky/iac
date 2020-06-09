@@ -1,39 +1,52 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+#
+# References:
+# - https://www.alextomkins.com/2016/09/testing-cloud-init-with-vagrant/
+
+# NOTE: Absolute path must be used.
+CLOUD_CONFIG_PATH = File.join(File.dirname(__FILE__), "nocloud.iso")
 
 Vagrant.configure("2") do |config|
+  # NOTE: Using 'generic/*' because 'Roboxes.org' provides 'libvirt' box.
   config.vm.box = "generic/ubuntu1804"
+
+
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-  config.vm.network "public_network"
+  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
   # config.vm.network "public_network"
 
+
+  # Disable shared folders
+  # config.vm.synced_folder ".", "/vagrant", disabled: true
+
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  # config.vm.synced_folder "/tmp", "/vagrant_data"
 
-    # Provider-specific configuration so you can fine-tune various
-    # backing providers for Vagrant. These expose provider-specific options.
-    # Example for VirtualBox:
-    config.vm.provider "libvirt" do |lv|
-    end
-    config.vm.provider "virtualbox" do |vb|
-    # Display the VirtualBox GUI when booting the machine
-        vb.gui = true
 
-    # Customize the amount of memory on the VM:
-        vb.memory = "1024"
-    end
+  config.ssh.password = nil # Disable SSH password
+  # config.ssh.private_key_path = File.expand_path("~/.ssh/id_rsa")
+  # config.ssh.insert_key = false
 
-  # View the documentation for the provider you are using for more
-  # information on available options.
+
+  # vm.provider "libvirt"
+  # - https://github.com/vagrant-libvirt/vagrant-libvirt/blob/master/README.md
+  config.vm.provider "libvirt" do |lv|
+
+    lv.storage :file, :device => :cdrom, :path => CLOUD_CONFIG_PATH
+
+  end
+
+  ################################################################################
+  # vm.provision
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "playbook.yml"
