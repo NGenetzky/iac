@@ -5,6 +5,7 @@
 # - https://www.alextomkins.com/2016/09/testing-cloud-init-with-vagrant/
 # - https://www.vagrantup.com/docs/vagrantfile/machine_settings.html
 # - https://github.com/debops/debops/blob/master/Vagrantfile
+# - https://github.com/debops/examples
 
 $sh_0_cloud_init = <<-'SCRIPT'
 set -o nounset -o pipefail -o errexit
@@ -33,13 +34,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.guest = :debian
 
   # Create a private network, which allows host-only access to the machine.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-  config.vm.network "private_network", type: "dhcp"
+  config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "private_network", type: "dhcp"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
   # config.vm.network "public_network"
+
+  # Public network configuration using existing network device
+  # Note: Private networks do not work with QEMU session enabled as root access is required to create new network devices
+  # config.vm.network :public_network,
+  #     :dev => "virbr1", :mode => "bridge", :type => "bridge"
 
   # A range of ports Vagrant can use for handling port collisions and such.
   # Defaults to 2200..2250.
@@ -67,11 +73,49 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ################################################################################
   # vm.provider "libvirt"
   # - https://github.com/vagrant-libvirt/vagrant-libvirt/blob/master/README.md
+  # - [Libvirt connection URI](http://libvirt.org/uri.html)
+  #
+  # uri - For advanced usage. Directly specifies what Libvirt connection URI
+  # vagrant-libvirt should use. Overrides all other connection configuration
+  # options
+  # storage_pool_name - Libvirt storage pool name, where box image and
+  # instance snapshots will be stored.
+  #
+  # kernel - To launch the guest with a kernel residing on host filesystems.
+  # Equivalent to qemu -kernel.
+  # initrd - To specify the initramfs/initrd to use for the guest. Equivalent
+  # to qemu -initrd.
+  # cmd_line - Arguments passed on to the guest kernel initramfs or initrd to
+  # use. Equivalent to qemu -append, only possible to use in combination with
+  # initrd and kernel.
+  #
+  # graphics_type - Sets the protocol used to expose the guest display. Defaults
+  # to vnc. Possible values are "sdl", "curses", "none", "gtk", "vnc" or "spice".
+  # graphics_port - Sets the port for the display protocol to bind to. Defaults
+  # to 5900.
+  # graphics_ip - Sets the IP for the display protocol to bind to. Defaults to
+  # "127.0.0.1".
+  #
+  # boot - Change the boot order and enables the boot menu. Possible options
+  # are "hd", "network", "cdrom". Defaults to "hd" with boot menu disabled.
+  # When "network" is set without "hd", only all NICs will be tried.
+  #
+  # Custom command line arguments and environment variables:
+  # libvirt.qemuargs :value => "-device"
+  # libvirt.qemuenv QEMU_PA_SAMPLES: '1024', QEMU_PA_SERVER: '/file/path'
+  #
   config.vm.provider "libvirt" do |lv|
     lv.random_hostname = true
 
-    lv.storage :file, :device => :cdrom, :path => CLOUD_CONFIG_PATH
+    # lv.qemu_use_session = true # Use QEMU session instead of system connection
+    # lv.uri = 'qemu:///session' # URI of QEMU session connection
+    # Path to store Libvirt images for the virtual machine, default is as ~/.local/share/libvirt/images
+    # lv.storage_pool_path = '/home/ngenetzky/.local/share/libvirt/images'
+    # lv.management_network_device = 'virbr0' # Management network device, default is 'virbr0'
 
+    lv.storage :file, :device => :cdrom, :path => CLOUD_CONFIG_PATH
+    lv.storage :file, :size => '20G'
+    # lv.storage :file, :size => '20G', :path => 'my_shared_disk.img', :allow_existing => true, :shareable => true, :type => 'raw'
   end
 
   ################################################################################
@@ -87,5 +131,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ################################################################################
 
   # A message to show after vagrant up.
-  config.vm.post_up_message = "Time to party!"
+  config.vm.post_up_message = "Time to party! uptime is $UPTIME seconds"
 end
