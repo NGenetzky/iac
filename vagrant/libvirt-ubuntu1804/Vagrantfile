@@ -23,7 +23,7 @@ DEFAULT_BASE_BOX = 'generic/ubuntu1804'
 # PROJECT_NAME = 'vagrant-' + File.basename(Dir.getwd)
 
 # NOTE: Absolute path must be used.
-CLOUD_CONFIG_PATH = File.join(File.dirname(__FILE__), "nocloud.iso")
+CLOUD_CONFIG_PATH = File.join(File.dirname(__FILE__), "cloud-init.iso")
 
 
 VAGRANTFILE_API_VERSION = 2
@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.guest = :debian
 
   # Create a private network, which allows host-only access to the machine.
-  config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "private_network", ip: "192.168.33.10"
   # config.vm.network "private_network", type: "dhcp"
 
   # Create a public network, which generally matched to bridged network.
@@ -104,6 +104,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # libvirt.qemuargs :value => "-device"
   # libvirt.qemuenv QEMU_PA_SAMPLES: '1024', QEMU_PA_SERVER: '/file/path'
   #
+  # autostart - Automatically start the domain when the host boots. Defaults to 'false'.
   config.vm.provider "libvirt" do |lv|
     lv.random_hostname = true
 

@@ -1,13 +1,90 @@
 #cloud-config
 # "#cloud-config" is required for cloudinit.readthedocs.io
+# References:
+# - https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+# - https://wiki.archlinux.org/index.php/Cloud-init#Default_user_configuration
+
+hostname: ngenetzky-fossa
+fqdn: ngenetzky-fossa.test.genetzky.us
+manage_etc_hosts: localhost
+
+system_info:
+   default_user:
+     name: user
+     lock_passwd: True
+     gecos: Generic Default User
+     groups: [wheel, users]
+     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+     shell: /bin/bash
+
+users:
+   - default # 'system_info.default_user' to configure
 
 chpasswd:
   # 'RANDOM' is special value to generate and display password on boot.
   list: |
-    ubuntu:RANDOM
+    user:RANDOM
   expire: False
 
-manage_etc_hosts: localhost
-
+# ssh-config
+ssh_pwauth: false # only cert auth via ssh (console access can still login)
+disable_root: true
 ssh_authorized_keys:
+  # vagrant insecure public key
   - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key
+
+packages:
+  - qemu-guest-agent
+
+################################################################################
+# disk / filesystem
+####
+
+# "disk_setup": disk partitioning
+# --------------------------------
+# The disk_setup directive instructs Cloud-init to partition a disk. The format is:
+disk_setup:
+  /dev/vda:
+    table_type: gpt
+    layout: True
+    # layout: # 'True' for single partition, otherwise:
+    #   - [<SIZE>, [<SIZE>, <PART_TYPE]]
+    overwrite: False
+
+# fs_setup: Setup the file system
+# -------------------------------
+# fs_setup describes the how the file systems are supposed to look.
+fs_setup:
+  - label: DATA_XFS
+    filesystem: xfs
+    device: '/dev/vda'
+    partition: auto
+    #cmd: mkfs -t %(filesystem)s -L %(label)s %(device)s
+
+growpart:
+  mode: auto
+  devices: ['/']
+
+mounts:
+  # [ /dev/vdx, /mountpoint, fstype ]
+  - [ LABEL=DATA_XFS, /dataxfs, xfs ]
+
+# 3rd col=fs type, 4th col=permissions, 5th=backup enabled, 6th=fsck order
+mount_default_fields: [ None, None, "ext4", "defaults,noatime","0","2"]
+
+####
+# disk / filesystem
+################################################################################
+
+bootcmd: # every boot
+    - [ sh, -c, 'echo ran cloud-init again at $(date) | sudo tee -a /root/bootcmd.log' ]
+
+runcmd: # run once for setup
+    - [ sh, -c, 'update-grub' ]
+
+# reboot so grub config takes affect
+power_state:
+  mode: reboot
+
+# written to /var/log/cloud-init-output.log
+final_message: "Done with cloud-init after $UPTIME seconds"
