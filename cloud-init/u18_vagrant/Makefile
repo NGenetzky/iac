@@ -22,16 +22,29 @@ help: ## Show Makefile help message
 # cloud-init
 ####
 
-cloud-init: cloud-init/meta-data cloud-init/user-data
+cloudinitsrc: cloud-init/meta-data cloud-init/user-data
 
 # sudo apt-get install genisoimage
-nocloud.iso: cloud-init ## Create iso for cloud-init
+mkisofs: cloudinitsrc
 	mkisofs \
 		-joliet -rock \
 		-volid "cidata" \
-		-output nocloud.iso \
+		-output cloud-init.iso \
 			cloud-init/meta-data \
 			cloud-init/user-data
+.PHONY: mkisofs
+
+# sudo apt install cloud-image-utils
+cloud-localds: cloudinitsrc
+	cloud-localds --verbose \
+		cloud-init.iso \
+		cloud-init/user-data \
+		cloud-init/meta-data
+.PHONY: cloud-localds
+
+# TODO: Not sure if any advantage of one or the other.
+iso: cloud-localds ## Create iso for cloud-init
+.PHONY: iso
 
 ####
 # cloud-init
