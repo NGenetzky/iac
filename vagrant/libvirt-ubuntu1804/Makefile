@@ -17,21 +17,36 @@ help: ## Show Makefile help message
 
 .DEFAULT_GOAL := help
 
+################################################################################
+# vagrant
+####
+
+validate:  ## validates the Vagrantfile
+	vagrant validate
+lint:  validate ## validates the Vagrantfile
+.PHONY: validate lint
+
 up:  ## starts and provisions the vagrant environment
 	vagrant up --provider=libvirt
 .PHONY: up
 
-validate:  ## starts and provisions the vagrant environment
-	vagrant validate
-lint:  validate ## starts and provisions the vagrant environment
-.PHONY: validate lint
+provision: ## provisions the vagrant machine
+	vagrant provision
+.PHONY: provision
+
+ssh: ## connects to machine via SSH
+	vagrant ssh
+enter: ssh ## connects to machine via SSH
+.PHONY: ssh enter
+
+suspend: ## suspends the machine
+	vagrant suspend
 
 destroy: ## stops and deletes all traces of the vagrant machine
 	vagrant destroy
 rm: destroy ## stops and deletes all traces of the vagrant machine
 .PHONY: destroy rm
 
-ssh: ## connects to machine via SSH
-	vagrant ssh
-enter: ssh ## connects to machine via SSH
-.PHONY: ssh enter
+####
+# vagrant
+################################################################################
