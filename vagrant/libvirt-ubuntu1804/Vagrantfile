@@ -10,7 +10,11 @@
 $sh_0_cloud_init = <<-'SCRIPT'
 set -o nounset -o pipefail -o errexit
 
-DEBIAN_FRONTEND=noninteractive apt-get -y \
+DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND
+
+apt-get update
+apt-get -y \
   install --no-install-recommends \
     cloud-init
 
