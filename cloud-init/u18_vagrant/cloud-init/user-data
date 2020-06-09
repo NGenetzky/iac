@@ -1,5 +1,8 @@
 #cloud-config
+# "#cloud-config" is required for cloudinit.readthedocs.io
+
 chpasswd:
+  # 'RANDOM' is special value to generate and display password on boot.
   list: |
     ubuntu:RANDOM
   expire: False
