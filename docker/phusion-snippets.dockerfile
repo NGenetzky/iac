@@ -1,24 +1,3 @@
-# ####
-# # Yocto
-# # https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#ubuntu-packages
-# build-essential \
-# chrpath \
-# cpio \
-# debianutils \
-# diffstat \
-# gawk \
-# gcc-multilib \
-# git-core \
-# iputils-ping \
-# python \
-# python3 \
-# python3-pexpect \
-# python3-pip \
-# socat \
-# texinfo \
-# unzip \
-# wget \
-# xz-utils \
 # # Other development tools
 # clang-format \
 
@@ -30,23 +9,6 @@
 #     datalad \
 #     autopep8 \
 #
-
-ARG YOCTO_PYTHON_REQ="\
-kas==2.1.1 \
-PyYAML>=3.0 \
-distro>=1.0.0 \
-jsonschema>=2.5.0 \
-"
-ARG EXTRA_PYTHON_REQ="\
-virtualenvwrapper \
-tmuxp \
-"
-RUN \
-  set -x && \
-  python3 -m pip install --no-cache-dir --disable-pip-version-check \
-    ${YOCTO_PYTHON_REQ} \
-    ${EXTRA_PYTHON_REQ}
-
 
 # # Configuration for default non-root user.
 # ARG USER_NAME='user'
