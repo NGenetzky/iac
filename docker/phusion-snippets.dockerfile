@@ -1,4 +1,35 @@
+# ####
+# # Yocto
+# # https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#ubuntu-packages
+# build-essential \
+# chrpath \
+# cpio \
+# debianutils \
+# diffstat \
+# gawk \
+# gcc-multilib \
+# git-core \
+# iputils-ping \
+# python \
+# python3 \
+# python3-pexpect \
+# python3-pip \
+# socat \
+# texinfo \
+# unzip \
+# wget \
+# xz-utils \
+# # Other development tools
+# clang-format \
 
+####
+# Additional tools installed with pip
+# && pip3 install --no-cache-dir \
+#     pre-commit \
+#     virtualenvwrapper \
+#     datalad \
+#     autopep8 \
+#
 
 ARG YOCTO_PYTHON_REQ="\
 kas==2.1.1 \
@@ -152,3 +183,4 @@ RUN \
 ####
 # WIP Layers
 ################################################################################
+
