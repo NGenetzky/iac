@@ -37,9 +37,13 @@ DOCKER_COMPOSE_FILE := $(DIR)/docker-compose.yml
 C_SINGLE_DEFAULT=main
 USER_NAME=user
 
+BUILDER_UID := $(shell id -u)
+BUILDER_GID := $(shell id -g)
+export BUILDER_UID BUILDER_GID
+
 # arguments
 c :=
-u := --user '$(shell id -u):$(shell id -g)'
+u := --user '$(BUILDER_UID):$(BUILDER_GID)'
 c_single := $(if $(c),$(c),$(C_SINGLE_DEFAULT))
 
 #
@@ -48,10 +52,10 @@ c_single := $(if $(c),$(c),$(C_SINGLE_DEFAULT))
 .PHONY: up start stop restart status restart logs
 
 up: ## Start all or c=<name> containers in foreground
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c)
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d $(c)
 
 start: ## Start all or c=<name> containers in background
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d $(c)
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c)
 
 stop: ## Stop all or c=<name> containers
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) stop $(c)
