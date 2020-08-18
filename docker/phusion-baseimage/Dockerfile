@@ -110,6 +110,63 @@ RUN cd '/etc/skel/' \
             "'/usr/local/share/bash-sensible.bash'" \
     ) >> '/etc/skel/.bashrc'
 
+# 2.6: https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#required-packages-for-the-build-host
+# ARG YOCTO_APT_REQ="gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping"
+# https://github.com/crops/yocto-dockerfiles/blob/344ac54cba52bbca3a47fb89b5db1469a54e8d8f/dockerfiles/ubuntu/ubuntu-18.04/ubuntu-18.04-base/Dockerfile#L1
+ARG YOCTO_APT_REQ="gawk wget git-core subversion diffstat unzip sysstat texinfo gcc-multilib g++-multilib build-essential chrpath socat python python3 xz-utils locales cpio screen tmux sudo iputils-ping iproute2 fluxbox tightvncserver"
+
+# setuptools required for to install kas with python3.
+# locales required to set LC_ALL for using bitbake.
+# 'file' is required "HOSTTOOL" for poky.
+# 'iproute2': 'ip' is required "HOSTTOOL" for poky.
+# 'iptables': 'iptables' is required to 'runqemu'
+ARG YOCTO_APT_REQ_APPEND="python3-setuptools locales file iproute2 iptables"
+ARG YOCTO_PYTHON_REQ="\
+kas==2.1.1 \
+PyYAML>=3.0 \
+distro>=1.0.0 \
+jsonschema>=2.5.0 \
+"
+ARG EXTRA_PYTHON_REQ="\
+virtualenvwrapper \
+tmuxp \
+"
+RUN \
+    set -x && \
+    # apt packages
+    apt-get update --yes && \
+    apt-get install --no-install-recommends --yes \
+        ${YOCTO_APT_REQ} \
+        ${YOCTO_APT_REQ_APPEND} \
+    && \
+    # Clean up
+    apt-get autoremove -y && \
+    apt-get clean --yes && \
+    rm -rf /var/lib/apt/lists/* && \
+    \
+    # python3 packages
+    python3 -m pip install --no-cache-dir --disable-pip-version-check \
+        ${YOCTO_PYTHON_REQ} \
+        ${EXTRA_PYTHON_REQ}
+
+# Misc System level config
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+RUN \
+    # VNC
+    cp -af /etc/skel/ /etc/vncskel/ && \
+    echo "export DISPLAY=1" >>/etc/vncskel/.bashrc && \
+    mkdir  /etc/vncskel/.vnc && \
+    echo "" | vncpasswd -f > /etc/vncskel/.vnc/passwd && \
+    chmod 0600 /etc/vncskel/.vnc/passwd && \
+    \
+    # Locales
+    /usr/sbin/locale-gen en_US.UTF-8 && \
+    \
+    echo 'dash dash/sh boolean false' | debconf-set-selections && \
+    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
 COPY ./rootfs/ /
 
 ################################################################################
