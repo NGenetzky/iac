@@ -167,6 +167,29 @@ RUN \
     echo 'dash dash/sh boolean false' | debconf-set-selections && \
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
+# ngnetzky-user-ssh-authorized_keys-from-github
+ARG URL_SSH_KEYS="https://github.com/NGenetzky.keys"
+RUN \
+    echo "AllowAgentForwarding yes" >> '/etc/ssh/sshd_config' && \
+    ## ssh authorized key management
+    install -m '0700' -d "/root/.ssh/" && \
+    wget -q "${URL_SSH_KEYS}" \
+        -O "/root/.ssh/github-authorized_keys.keys" && \
+    install -T -m '0600' \
+        "/root/.ssh/github-authorized_keys.keys" \
+        "/root/.ssh/authorized_keys" && \
+    #####
+    # WARNING: Phusion magic here
+    rm -f '/etc/service/sshd/down' && \
+    # Regenerate SSH host keys. baseimage-docker does not contain any, so you
+    # have to do that yourself. You may also comment out this instruction; the
+    # init system will auto-generate one during boot.
+    '/etc/my_init.d/00_regen_ssh_host_keys.sh'
+EXPOSE 22
+
+# https://stackoverflow.com/questions/46288847/how-to-suppress-pip-upgrade-warning
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+
 COPY ./rootfs/ /
 
 ################################################################################
