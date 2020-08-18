@@ -1,12 +1,10 @@
+##################################################################################
 # phusion-ngenetzky Dockerfile
-
+#
 # References
 # - https://github.com/NGenetzky/iac/
 # - https://medium.com/@tonistiigi/advanced-multi-stage-build-patterns-6f741b852fae
-
-##################################################################################
-##################################################################################
-# FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
+#
 #
 # Use phusion/baseimage as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
@@ -15,14 +13,13 @@
 # ___________________________________________________________
 # | Ubuntu LTS | Phusion | Notes from Phusion       |
 # |------------|---------|--------------------------|
+# |   18.04    | 1.0.0   | released on Jun 04, 2020 |
 # |   18.04    |  0.11   | released on Aug 16, 2018 |
 # |   16.04    | 0.9.22  | released on May 17, 2017 |
 #
-#########
-#########
+####
 
-FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
-COPY .docker/phusion/rootfs/ /
+FROM phusion/baseimage:bionic-1.0.0 as phusion-ngenetzky-bionic-1.0.0
 
 # Using "ARG" influences the behavior of apt only while building container.
 # No Debian that's a bad Debian! We don't have an interactive prompt don't fail
@@ -41,9 +38,9 @@ RUN apt-get --quiet --yes update \
         git \
         sudo \
     && git config --system \
-        user.name 'Nathan Genetzky' \
+        user.name 'User Phusion' \
     && git config --system \
-        user.email 'nathan@genetzky.us' \
+        user.email 'user@phusion-ngenetzky' \
     && ( \
         cd etc/ \
         && git init \
@@ -95,37 +92,6 @@ RUN apt-get --quiet --yes update \
         # python-setuptools \
         # python-wheel \
         #
-        ####
-        # Yocto
-        # https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#ubuntu-packages
-        build-essential \
-        chrpath \
-        cpio \
-        debianutils \
-        diffstat \
-        gawk \
-        gcc-multilib \
-        git-core \
-        iputils-ping \
-        python \
-        python3 \
-        python3-pexpect \
-        python3-pip \
-        socat \
-        texinfo \
-        unzip \
-        wget \
-        xz-utils \
-        # Other development tools
-        clang-format \
-    ####
-    # Additional tools installed with pip
-    && pip3 install --no-cache-dir \
-        pre-commit \
-        virtualenvwrapper \
-        datalad \
-        autopep8 \
-    #
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -143,6 +109,8 @@ RUN cd '/etc/skel/' \
         printf 'f=%s && [[ -f $f ]] && source $f' \
             "'/usr/local/share/bash-sensible.bash'" \
     ) >> '/etc/skel/.bashrc'
+
+COPY ./rootfs/ /
 
 ################################################################################
 # phusion magic
