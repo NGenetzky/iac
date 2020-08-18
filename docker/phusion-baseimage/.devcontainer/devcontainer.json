@@ -47,7 +47,7 @@
 	"containerUser": "root", // WARNING: phusion must run as root
 	"remoteUser": "user", // Container user VS Code should use when connecting
 	// "shutdownAction": "none",
-	"workspaceFolder": "/workspace/",
+	"workspaceFolder": "/work/",
 
 	// vsc-docker-general
 	// "postCreateCommand": [],

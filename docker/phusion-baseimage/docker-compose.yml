@@ -14,10 +14,12 @@ services:
     volumes:
     # You can bind mount current directory as read-only reference.
     # - ./:/mnt/pwd/:ro
+    - ./:/repo/:ro
 
     # You can bind mount current directory as workspace
-    - ./:/home/user/workspace/
+    # - ./:/home/user/workspace/
     # - ./:/workspace/
+    - ./:/work/
 
     # Forwards the host Docker socket to the container.
     # - /var/run/docker.sock:/var/run/docker.sock
@@ -25,12 +27,12 @@ services:
     # You can mount a 'tmpfs' for performance
     - cache_vol:/var/cache/
 
-    ports:
+    # ports:
       # Only expose port 22 to localhost
       # - "127.0.0.1:10022:22"
 
       # Expose 8888 to localhost for jupyter
-      - "127.0.0.1:8888:8888"
+      # - "127.0.0.1:8888:8888"
 
 volumes:
   cache_vol:
