@@ -52,10 +52,11 @@ c_single := $(if $(c),$(c),$(C_SINGLE_DEFAULT))
 .PHONY: up start stop restart status restart logs
 
 up: ## Start all or c=<name> containers in foreground
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d $(c)
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c)
 
 start: ## Start all or c=<name> containers in background
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c)
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) start $(c)
+# @$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c) -d # TODO: up or start?
 
 stop: ## Stop all or c=<name> containers
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) stop $(c)
