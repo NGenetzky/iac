@@ -84,7 +84,7 @@ timezone: US/Central
 system_info:
   default_user:
     name: user
-    lock_passwd: True
+    # lock_passwd: True
     plain_text_passwd: "ubuntu"
     gecos: "Generic Default User"
     # groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev]
@@ -92,12 +92,14 @@ system_info:
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     shell: /bin/bash
 
+# WARNING: BUG: Do not attempt to join another user's primary group.
 users:
   - default # 'system_info.default_user' to configure
 
   - name: ngenetzky
     uid: "1337"
-    groups: user, admin, adm, dialout, sudo, plugdev, netdev
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: admin, adm, dialout, sudo, plugdev, netdev
     # ssh_import_id: gh:ngenetzky
     ssh_authorized_keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDs5SHb3KupFrAHHpxdD140buvFZCPvP4N/Y3VC6g6gd1YQFldA5cWZ0E80wwea0C1ZpuZcr8JLmPa7ieRD17gXCtQzsB9gxD01gjcPd2AyawLBanN3dz6nXSLZBe6uY9jZDdw3pTMOC/Mnnjfziv5zONqKY771T/I8n+J4FET8lGJ4eSWq4mKBSj7WaOvePBvd3+wyDFItXo6Y6XO98tJS/l3tQKTyOJIxGKVFlhK8I8wyXOaDZeZ0IZQkhio+fTzJwWZ1loEa74klBqMxujunqJvOiGWVme8VYeyLir/K1M2nAMH4/9O1Vsz5BpTE8Og/GTIhq74VGlG7Cw1nLAGh
@@ -117,6 +119,7 @@ chpasswd:
   expire: true
   list:
   - user:ubuntu
+  - ngenetzky:ubuntu
 
 ## On first boot, use ssh-import-id to give the specific users SSH access to
 ## the default user
