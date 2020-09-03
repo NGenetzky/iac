@@ -4,6 +4,7 @@
 # - https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 # - https://wiki.archlinux.org/index.php/Cloud-init#Default_user_configuration
 # - https://askubuntu.com/a/1240068
+# - https://github.com/number5/cloud-init/blob/master/doc/examples/cloud-config.txt
 
 autoinstall:
   version: 1
@@ -71,9 +72,14 @@ autoinstall:
   #   - {device: format-1, path: /, type: mount, id: mount-1}
   #   - {device: format-0, path: /boot, type: mount, id: mount-0}
 
-hostname: ngenetzky-fossa
-fqdn: ngenetzky-fossa.test.genetzky.us
+hostname: ryder
+fqdn: "ryder.genetzky.us"
+# Set our hostname in /etc/hosts too # manage_etc_hosts: true
 manage_etc_hosts: localhost
+
+# timezone: set the timezone for this instance
+# the value of 'timezone' must exist in /usr/share/zoneinfo
+timezone: US/Central
 
 system_info:
   default_user:
@@ -89,11 +95,28 @@ system_info:
 users:
   - default # 'system_info.default_user' to configure
 
+  - name: ngenetzky
+    uid: "1337"
+    groups: user, admin, adm, dialout, sudo, plugdev, netdev
+    # ssh_import_id: gh:ngenetzky
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDs5SHb3KupFrAHHpxdD140buvFZCPvP4N/Y3VC6g6gd1YQFldA5cWZ0E80wwea0C1ZpuZcr8JLmPa7ieRD17gXCtQzsB9gxD01gjcPd2AyawLBanN3dz6nXSLZBe6uY9jZDdw3pTMOC/Mnnjfziv5zONqKY771T/I8n+J4FET8lGJ4eSWq4mKBSj7WaOvePBvd3+wyDFItXo6Y6XO98tJS/l3tQKTyOJIxGKVFlhK8I8wyXOaDZeZ0IZQkhio+fTzJwWZ1loEa74klBqMxujunqJvOiGWVme8VYeyLir/K1M2nAMH4/9O1Vsz5BpTE8Og/GTIhq74VGlG7Cw1nLAGh
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3hdgktpcTpemBW9mUNz6nDG1X+qVgv+WBF0594Ljd3XpVTNndI74AWachiVHbKVyhXGKxhEomf62/ep/tX9+XwNO3JHn2210yp3GSZmalRvVtmUHknF3On9V/CvgOu1veZC+m8qaZI+4nES3GZ+mWo0IoKXDOZKYli0r/RAvW2yPo0FgZIVLNHafT2lgXOe+P+iAIErqk6YP6FLAY3S0IaX6WJtMuO8iTfvHojST97IuGcACpyCm7zD+lASalYzCGRIMlTUlypA0v+c8e08xFonx8f83LMcYvtHlftHV/ixzYOJMgo807gbPORKZAhYJNXcrziSj3dq/sP47+rOnn
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcVYQT0ptIoEBAvxodaPis8oTr8IYvVWr3EvMXluylRwqF41g6QCTKRfF7O3mfPjB4q2dUkj8wGmw2YswwvgP+60NWc2jpqlu5YvHI+wL+3knBZXCL6k7Isl+hRb8eRnjH1RLo2QocNdAV4/1JnIY3liPOFNOBB/If7omKhVJYNQeyq6OyzRn3cloFnaRAf5JZ6Xn9nYOpp0k1xLtexei5itef/gO/98eKSN4Px965KI9rFo9y2AP/aPKlCRh1Sdd/0GfL3aAln+JxAGKm7/wVDI9q1xfqQcBywH1UvxptR0xVzjzyN6lS6X0mrGEeUTrUs7uhch0N+QH+S5ShlxiP
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTzyWSsEYlXzNTh+9V6ZECtXSPCkbKf+PZ7BAs7xNSR/BabnmzbNDlbFz9eNfcpxBYGQCFw5+Gk2ylZC679b10FpmvLE8E7jLHNzGi+/gixztVGrKA/PPtnfMaEvUn30YPKk8g9d4fX8CunmQruLp4N8HPQdILnpWmMS8rnO9lh1lSmXo02Hfwe0hCWgvZ3ZSjfSiZ+cIj9E5Kv2BVhMEejdR+ooQwdsNoOQTfuBZk4/K8JxrRMSIjGNPzSAg+uA9qVmQ9gmBpn5sqdxZx69xqfGERPNY+ScxsFomlJT0W8hDZi2735op/xe4VMkn7buzPzH+5jDdnr6zPheehG6a7
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDV2Vg5tQtQ3WhsELI40byhJmGcRiW0GfVdPepU6DMcKtgxLjAaaNLuDNlMk3DQSYm8jjzRV/URhqnn6YCTYeejb9B3601fAJBgCg1OsTG6ubjFjNVitoxT33blu+74gHzMQvXKrIu7VQXecz/0HYFkmAlObTds/BmCU9gpr2SdlN+MaMPvlTWxvTxaHL6J+hLaICL6kIGBrpw1s8zOtOFhoDm1/MS7I9p5/nejHvw1H/7HvTi3zwqStVagkE/AVT5rEyu6IQmUDRRfzWWjsurnSiw+dVnphecTiY2Y/1vlWLLGoGVxJ3vycbHLTaabXFAF6QX2/GNL2rnlF1FQc6cL
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIElO3ffWOuhA2bHoO0Lj8lqVbDP7KMeJxajulFtv72Yq
+
 # chpasswd:
 #   # 'RANDOM' is special value to generate and display password on boot.
 #   list: |
 #     user:RANDOM
 #   expire: False
+
+chpasswd:
+  expire: true
+  list:
+  - user:ubuntu
 
 ## On first boot, use ssh-import-id to give the specific users SSH access to
 ## the default user
@@ -113,6 +136,10 @@ ssh_authorized_keys:
   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTzyWSsEYlXzNTh+9V6ZECtXSPCkbKf+PZ7BAs7xNSR/BabnmzbNDlbFz9eNfcpxBYGQCFw5+Gk2ylZC679b10FpmvLE8E7jLHNzGi+/gixztVGrKA/PPtnfMaEvUn30YPKk8g9d4fX8CunmQruLp4N8HPQdILnpWmMS8rnO9lh1lSmXo02Hfwe0hCWgvZ3ZSjfSiZ+cIj9E5Kv2BVhMEejdR+ooQwdsNoOQTfuBZk4/K8JxrRMSIjGNPzSAg+uA9qVmQ9gmBpn5sqdxZx69xqfGERPNY+ScxsFomlJT0W8hDZi2735op/xe4VMkn7buzPzH+5jDdnr6zPheehG6a7
   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDV2Vg5tQtQ3WhsELI40byhJmGcRiW0GfVdPepU6DMcKtgxLjAaaNLuDNlMk3DQSYm8jjzRV/URhqnn6YCTYeejb9B3601fAJBgCg1OsTG6ubjFjNVitoxT33blu+74gHzMQvXKrIu7VQXecz/0HYFkmAlObTds/BmCU9gpr2SdlN+MaMPvlTWxvTxaHL6J+hLaICL6kIGBrpw1s8zOtOFhoDm1/MS7I9p5/nejHvw1H/7HvTi3zwqStVagkE/AVT5rEyu6IQmUDRRfzWWjsurnSiw+dVnphecTiY2Y/1vlWLLGoGVxJ3vycbHLTaabXFAF6QX2/GNL2rnlF1FQc6cL
   - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIElO3ffWOuhA2bHoO0Lj8lqVbDP7KMeJxajulFtv72Yq
+
+## Update apt database and upgrade packages on first boot
+# package_update: true
+# package_upgrade: true
 
 packages:
   - tmux
