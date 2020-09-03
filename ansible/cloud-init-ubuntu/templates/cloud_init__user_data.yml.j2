@@ -1,9 +1,184 @@
 #cloud-config
 # "#cloud-config" is required for cloudinit.readthedocs.io
+# References:
+# - https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+# - https://wiki.archlinux.org/index.php/Cloud-init#Default_user_configuration
+# - https://askubuntu.com/a/1240068
 
 autoinstall:
   version: 1
+  # use interactive-sections to avoid an automatic reboot
+  #interactive-sections:
+  #  - locale
+  apt:
+    # even set to no/false, geoip lookup still happens
+    #geoip: no
+    # preserve_sources_list: false
+    # primary:
+    # - arches: [amd64, i386]
+    #   uri: http://us.archive.ubuntu.com/ubuntu
+    # - arches: [default]
+    #   uri: http://ports.ubuntu.com/ubuntu-ports
   identity:
-    hostname: ubuntu-server
-    password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM30JZ4QrOQ2aOXJ8yk96xpcCof0kxKwuX1kqLG/ygbJ1f8wxED22bTL4F46P0"
-    username: ubuntu
+    hostname: ryder
+    # password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM30JZ4QrOQ2aOXJ8yk96xpcCof0kxKwuX1kqLG/ygbJ1f8wxED22bTL4F46P0"
+    username: user
+  keyboard: { layout: us, variant: "" }
+  locale: en_US.UTF-8
+  # interface name will probably be different
+  # network:
+  #   network:
+  #     version: 2
+  #     ethernets:
+  #       ens192:
+  #         critical: true
+  #         dhcp-identifier: mac
+  #         dhcp4: true
+  ssh:
+    allow-pw: false
+    authorized-keys: []
+    ssh_authorized_keys:
+      # vagrant insecure public key
+      - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key
+      # gh:ngenetzky
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDs5SHb3KupFrAHHpxdD140buvFZCPvP4N/Y3VC6g6gd1YQFldA5cWZ0E80wwea0C1ZpuZcr8JLmPa7ieRD17gXCtQzsB9gxD01gjcPd2AyawLBanN3dz6nXSLZBe6uY9jZDdw3pTMOC/Mnnjfziv5zONqKY771T/I8n+J4FET8lGJ4eSWq4mKBSj7WaOvePBvd3+wyDFItXo6Y6XO98tJS/l3tQKTyOJIxGKVFlhK8I8wyXOaDZeZ0IZQkhio+fTzJwWZ1loEa74klBqMxujunqJvOiGWVme8VYeyLir/K1M2nAMH4/9O1Vsz5BpTE8Og/GTIhq74VGlG7Cw1nLAGh
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3hdgktpcTpemBW9mUNz6nDG1X+qVgv+WBF0594Ljd3XpVTNndI74AWachiVHbKVyhXGKxhEomf62/ep/tX9+XwNO3JHn2210yp3GSZmalRvVtmUHknF3On9V/CvgOu1veZC+m8qaZI+4nES3GZ+mWo0IoKXDOZKYli0r/RAvW2yPo0FgZIVLNHafT2lgXOe+P+iAIErqk6YP6FLAY3S0IaX6WJtMuO8iTfvHojST97IuGcACpyCm7zD+lASalYzCGRIMlTUlypA0v+c8e08xFonx8f83LMcYvtHlftHV/ixzYOJMgo807gbPORKZAhYJNXcrziSj3dq/sP47+rOnn
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcVYQT0ptIoEBAvxodaPis8oTr8IYvVWr3EvMXluylRwqF41g6QCTKRfF7O3mfPjB4q2dUkj8wGmw2YswwvgP+60NWc2jpqlu5YvHI+wL+3knBZXCL6k7Isl+hRb8eRnjH1RLo2QocNdAV4/1JnIY3liPOFNOBB/If7omKhVJYNQeyq6OyzRn3cloFnaRAf5JZ6Xn9nYOpp0k1xLtexei5itef/gO/98eKSN4Px965KI9rFo9y2AP/aPKlCRh1Sdd/0GfL3aAln+JxAGKm7/wVDI9q1xfqQcBywH1UvxptR0xVzjzyN6lS6X0mrGEeUTrUs7uhch0N+QH+S5ShlxiP
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTzyWSsEYlXzNTh+9V6ZECtXSPCkbKf+PZ7BAs7xNSR/BabnmzbNDlbFz9eNfcpxBYGQCFw5+Gk2ylZC679b10FpmvLE8E7jLHNzGi+/gixztVGrKA/PPtnfMaEvUn30YPKk8g9d4fX8CunmQruLp4N8HPQdILnpWmMS8rnO9lh1lSmXo02Hfwe0hCWgvZ3ZSjfSiZ+cIj9E5Kv2BVhMEejdR+ooQwdsNoOQTfuBZk4/K8JxrRMSIjGNPzSAg+uA9qVmQ9gmBpn5sqdxZx69xqfGERPNY+ScxsFomlJT0W8hDZi2735op/xe4VMkn7buzPzH+5jDdnr6zPheehG6a7
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDV2Vg5tQtQ3WhsELI40byhJmGcRiW0GfVdPepU6DMcKtgxLjAaaNLuDNlMk3DQSYm8jjzRV/URhqnn6YCTYeejb9B3601fAJBgCg1OsTG6ubjFjNVitoxT33blu+74gHzMQvXKrIu7VQXecz/0HYFkmAlObTds/BmCU9gpr2SdlN+MaMPvlTWxvTxaHL6J+hLaICL6kIGBrpw1s8zOtOFhoDm1/MS7I9p5/nejHvw1H/7HvTi3zwqStVagkE/AVT5rEyu6IQmUDRRfzWWjsurnSiw+dVnphecTiY2Y/1vlWLLGoGVxJ3vycbHLTaabXFAF6QX2/GNL2rnlF1FQc6cL
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIElO3ffWOuhA2bHoO0Lj8lqVbDP7KMeJxajulFtv72Yq
+    # install-server: true
+  # this creates an bios_grub partition, /boot partition, and root(/) lvm volume
+  # storage:
+  #   config:
+  #   - {ptable: gpt, path: /dev/sda, wipe: superblock, preserve: false, name: '', grub_device: true,
+  #     type: disk, id: disk-sda}
+  #   - {device: disk-sda, size: 1048576, flag: bios_grub, number: 1, preserve: false,
+  #     type: partition, id: partition-0}
+  #   - {device: disk-sda, size: 1073741824, wipe: superblock, flag: '', number: 2,
+  #     preserve: false, type: partition, id: partition-1}
+  #   - {fstype: ext4, volume: partition-1, preserve: false, type: format, id: format-0}
+  #   - {device: disk-sda, size: -1, wipe: superblock, flag: '', number: 3,
+  #     preserve: false, type: partition, id: partition-2}
+  #   - name: ubuntu-vg
+  #     devices: [partition-2]
+  #     preserve: false
+  #     type: lvm_volgroup
+  #     id: lvm_volgroup-0
+  #   - {name: ubuntu-lv, volgroup: lvm_volgroup-0, size: 100%, preserve: false,
+  #     type: lvm_partition, id: lvm_partition-0}
+  #   - {fstype: ext4, volume: lvm_partition-0, preserve: false, type: format, id: format-1}
+  #   - {device: format-1, path: /, type: mount, id: mount-1}
+  #   - {device: format-0, path: /boot, type: mount, id: mount-0}
+
+hostname: ngenetzky-fossa
+fqdn: ngenetzky-fossa.test.genetzky.us
+manage_etc_hosts: localhost
+
+system_info:
+  default_user:
+    name: user
+    lock_passwd: True
+    plain_text_passwd: "ubuntu"
+    gecos: "Generic Default User"
+    # groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev]
+    groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev]
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+
+users:
+  - default # 'system_info.default_user' to configure
+
+# chpasswd:
+#   # 'RANDOM' is special value to generate and display password on boot.
+#   list: |
+#     user:RANDOM
+#   expire: False
+
+## On first boot, use ssh-import-id to give the specific users SSH access to
+## the default user
+#ssh_import_id:
+#- gh:ngenetzky
+
+# ssh-config
+ssh_pwauth: false # only cert auth via ssh (console access can still login)
+disable_root: true
+ssh_authorized_keys:
+  # vagrant insecure public key
+  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key
+  # gh:ngenetzky
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDs5SHb3KupFrAHHpxdD140buvFZCPvP4N/Y3VC6g6gd1YQFldA5cWZ0E80wwea0C1ZpuZcr8JLmPa7ieRD17gXCtQzsB9gxD01gjcPd2AyawLBanN3dz6nXSLZBe6uY9jZDdw3pTMOC/Mnnjfziv5zONqKY771T/I8n+J4FET8lGJ4eSWq4mKBSj7WaOvePBvd3+wyDFItXo6Y6XO98tJS/l3tQKTyOJIxGKVFlhK8I8wyXOaDZeZ0IZQkhio+fTzJwWZ1loEa74klBqMxujunqJvOiGWVme8VYeyLir/K1M2nAMH4/9O1Vsz5BpTE8Og/GTIhq74VGlG7Cw1nLAGh
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3hdgktpcTpemBW9mUNz6nDG1X+qVgv+WBF0594Ljd3XpVTNndI74AWachiVHbKVyhXGKxhEomf62/ep/tX9+XwNO3JHn2210yp3GSZmalRvVtmUHknF3On9V/CvgOu1veZC+m8qaZI+4nES3GZ+mWo0IoKXDOZKYli0r/RAvW2yPo0FgZIVLNHafT2lgXOe+P+iAIErqk6YP6FLAY3S0IaX6WJtMuO8iTfvHojST97IuGcACpyCm7zD+lASalYzCGRIMlTUlypA0v+c8e08xFonx8f83LMcYvtHlftHV/ixzYOJMgo807gbPORKZAhYJNXcrziSj3dq/sP47+rOnn
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcVYQT0ptIoEBAvxodaPis8oTr8IYvVWr3EvMXluylRwqF41g6QCTKRfF7O3mfPjB4q2dUkj8wGmw2YswwvgP+60NWc2jpqlu5YvHI+wL+3knBZXCL6k7Isl+hRb8eRnjH1RLo2QocNdAV4/1JnIY3liPOFNOBB/If7omKhVJYNQeyq6OyzRn3cloFnaRAf5JZ6Xn9nYOpp0k1xLtexei5itef/gO/98eKSN4Px965KI9rFo9y2AP/aPKlCRh1Sdd/0GfL3aAln+JxAGKm7/wVDI9q1xfqQcBywH1UvxptR0xVzjzyN6lS6X0mrGEeUTrUs7uhch0N+QH+S5ShlxiP
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTzyWSsEYlXzNTh+9V6ZECtXSPCkbKf+PZ7BAs7xNSR/BabnmzbNDlbFz9eNfcpxBYGQCFw5+Gk2ylZC679b10FpmvLE8E7jLHNzGi+/gixztVGrKA/PPtnfMaEvUn30YPKk8g9d4fX8CunmQruLp4N8HPQdILnpWmMS8rnO9lh1lSmXo02Hfwe0hCWgvZ3ZSjfSiZ+cIj9E5Kv2BVhMEejdR+ooQwdsNoOQTfuBZk4/K8JxrRMSIjGNPzSAg+uA9qVmQ9gmBpn5sqdxZx69xqfGERPNY+ScxsFomlJT0W8hDZi2735op/xe4VMkn7buzPzH+5jDdnr6zPheehG6a7
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDV2Vg5tQtQ3WhsELI40byhJmGcRiW0GfVdPepU6DMcKtgxLjAaaNLuDNlMk3DQSYm8jjzRV/URhqnn6YCTYeejb9B3601fAJBgCg1OsTG6ubjFjNVitoxT33blu+74gHzMQvXKrIu7VQXecz/0HYFkmAlObTds/BmCU9gpr2SdlN+MaMPvlTWxvTxaHL6J+hLaICL6kIGBrpw1s8zOtOFhoDm1/MS7I9p5/nejHvw1H/7HvTi3zwqStVagkE/AVT5rEyu6IQmUDRRfzWWjsurnSiw+dVnphecTiY2Y/1vlWLLGoGVxJ3vycbHLTaabXFAF6QX2/GNL2rnlF1FQc6cL
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIElO3ffWOuhA2bHoO0Lj8lqVbDP7KMeJxajulFtv72Yq
+
+packages:
+  - tmux
+
+################################################################################
+# disk / filesystem
+####
+
+# "disk_setup": disk partitioning
+# --------------------------------
+# The disk_setup directive instructs Cloud-init to partition a disk. The format is:
+# disk_setup:
+#   /dev/vda:
+#     table_type: gpt
+#     layout: True
+#     # layout: # 'True' for single partition, otherwise:
+#     #   - [<SIZE>, [<SIZE>, <PART_TYPE]]
+#     overwrite: False
+
+# fs_setup: Setup the file system
+# -------------------------------
+# fs_setup describes the how the file systems are supposed to look.
+# fs_setup:
+#   - label: DATA_XFS
+#     filesystem: xfs
+#     device: '/dev/vda'
+#     partition: auto
+#     #cmd: mkfs -t %(filesystem)s -L %(label)s %(device)s
+
+# growpart:
+#   mode: auto
+#   devices: ['/']
+
+# mounts:
+# 3rd col=fs type, 4th col=permissions, 5th=backup enabled, 6th=fsck order
+# mount_default_fields: [ None, None, "ext4", "defaults,noatime","0","2"]
+
+####
+# disk / filesystem
+################################################################################
+
+bootcmd: # every boot
+  - [
+      sh,
+      -c,
+      "echo ran cloud-init again at $(date) | sudo tee -a /root/bootcmd.log",
+    ]
+
+runcmd: # run once for setup
+  - [
+      sh,
+      -c,
+      "echo ran cloud-init runcmd at $(date) | sudo tee -a /root/bootcmd.log",
+    ]
+  - [sh, -c, "update-grub"]
+
+# reboot so grub config takes affect
+power_state:
+  mode: reboot
+
+# written to /var/log/cloud-init-output.log
+final_message: "Done with cloud-init after $UPTIME seconds"
+
+write_files:
+  - path: /root/test.txt
+    content: |
+      test file created
+    owner: root:root
+    permissions: "0600"
