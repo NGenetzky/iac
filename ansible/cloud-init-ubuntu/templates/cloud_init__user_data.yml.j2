@@ -100,8 +100,10 @@ users:
   - default # 'system_info.default_user' to configure
 
   - name: ngenetzky
+    gecos: "Pretty fly for a white guy"
     uid: "1337"
-    sudo: ALL=(ALL) NOPASSWD:ALL
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
     groups: admin, adm, dialout, sudo, plugdev, netdev
     # ssh_import_id: gh:ngenetzky
     ssh_authorized_keys:
