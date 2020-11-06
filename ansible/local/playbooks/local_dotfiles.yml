@@ -1,0 +1,5 @@
+---
+- hosts: default
+  become: no
+  roles:
+    - role: dotfiles
