@@ -23,9 +23,9 @@ SHELL:=/bin/bash
 ##
 # VARIABLES
 ##
-playbook   ?= setup
-roles_path ?= "roles/"
-env        ?= hosts
+playbook   ?= main
+roles_path ?= "../roles/"
+env        ?= inventory
 mkfile_dir ?= $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 ifeq ("$(wildcard $(mkfile_dir)pass.sh)", "")
   opts     ?= $(args)
@@ -49,12 +49,6 @@ endif
 .PHONY: install
 install: ## make install [roles_path=roles/] # Install roles dependencies
 	@ansible-galaxy install --roles-path="$(roles_path)" --role-file="requirements.yml" $(args)
-
-.PHONY: fetch-inventory
-fetch-inventory: ## make fetch-inventory [provider=<ec2|gce...>] [env=hosts] # Download dynamic inventory from Ansible's contrib
-	@wget https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/$(provider).py
-	@chmod +x $(provider).py
-	mv $(provider).py $(env)
 
 .PHONY: inventory
 inventory: ## make inventory [env=hosts] # Display the inventory as seen from Ansible
