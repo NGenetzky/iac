@@ -1,0 +1,64 @@
+- name: Make sure the required folders are present
+  file:
+    state: directory
+    path: "{{ item }}"
+    recurse: yes
+  with_items:
+    - "{{ dotfiles_dest }}/.config/nvim"
+    - "{{ dotfiles_dest }}/.ssh"
+    - "{{ dotfiles_dest }}/.tmux/plugins"
+    - "{{ dotfiles_dest }}/.vim"
+    - "{{ dotfiles_dest }}/.vim/autoload"
+    - "{{ dotfiles_dest }}/.vim/bundle"
+
+# src 　Will accept absolute, relative and nonexisting paths. Relative paths are not expanded.
+- name: Create Symlinks for public files at top level
+  file:
+    src: ".home/home/{{ item.src }}"
+    dest: "{{ dotfiles_dest }}/{{ item.dst }}"
+    state: link
+    force: yes
+  with_items:
+    # shell components:
+    - { src: "bash_logout", dst: ".bash_logout" }
+    - { src: "bash_login", dst: ".bash_login" }
+    - { src: "bash_profile", dst: ".bash_profile" }
+    - { src: "bashrc", dst: ".bashrc" }
+    - { src: "gitconfig", dst: ".gitconfig" }
+    - { src: "gitignore", dst: ".gitignore" }
+    - { src: "inputrc", dst: ".inputrc" }
+    - { src: "nanorc", dst: ".nanorc" }
+    - { src: "profile", dst: ".profile" }
+    - { src: "tmux.conf", dst: ".tmux.conf" }
+    - { src: "vimrc", dst: ".vimrc" }
+    - { src: "zshrc", dst: ".zshrc" }
+
+    # - { src: "aliases", dst: ".aliases" } # Put in .profile
+    # - { src: "exports", dst: ".exports" } # Put in .profile
+
+    # TODO: Future list of possible times
+    # - { src: "antibody_bundle", dst: ".antibody_bundle" }
+    # - { src: "bindings", dst: ".bindings" }
+    # - { src: "bindings_fzf", dst: ".bindings_fzf" }
+    # - { src: "dockerfunc", dst: ".dockerfunc" }
+    # - { src: "fzf", dst: ".fzf" }
+    # - { src: "fzf.zsh", dst: ".fzf.zsh" }
+    # - { src: "gdbinit", dst: ".gdbinit" }
+
+- name: Create Symlinks for public files in subdirs
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ dotfiles_dest }}/{{ item.dst }}"
+    state: link
+    force: yes
+  with_items:
+    - { src: "../../.home/home/nvim/init.vim", dst: ".config/nvim/init.vim" }
+    # Fully local
+    - { src: "../bundle/vim-plug/plug.vim", dst: ".vim/autoload/plug.vim" }
+
+    # - { src: "powerline-config", dst: ".config/powerline" }
+    # - { src: "powerline/powerline/bindings/tmux/powerline.conf", dst: ".powerline.conf" }
+    # - { src: "radare2rc", dst: ".radare2rc" }
+    # - { src: "ranger", dst: ".config/ranger" }
+    # - { src: "vim/colors", dst: ".vim/colors" }
+    # - { src: "vim/snippets", dst: ".vim/snippets" }
