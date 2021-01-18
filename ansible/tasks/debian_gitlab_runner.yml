@@ -1,0 +1,25 @@
+---
+- name: Install Prerequisites
+  apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+# User + Key Setup
+- name: Create a user
+  user:
+    name: "{{ gitlab_runner_user }}"
+    state: present
+    append: true
+    create_home: true
+    shell: /bin/bash
+
+- name: Set authorized key for remote user
+  authorized_key:
+    user: "{{ gitlab_runner_user }}"
+    state: present
+    key: "{{ gitlab_runner_auth_key }}"
+
+# Install Packages
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install required system packages
+  apt: name={{ gitlab_runner_packages }} state=latest

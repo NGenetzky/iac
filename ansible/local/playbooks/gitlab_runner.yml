@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: localhost
   become: true
   vars:
     gitlab_runner_user: 'gitlab-runner'
