@@ -1,0 +1,75 @@
+---
+- hosts: all
+  become: true
+  # vars_files:
+  #   - vars/default.yml
+  vars:
+    gitlab_runner_user: 'gitlab-runner'
+    gitlab_runner_auth_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+    gitlab_runner_packages:
+    - 'curl'
+    - 'vim'
+    - 'git'
+    - 'gitlab-runner'
+
+  tasks:
+    - name: Install Prerequisites
+      apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+  # Sudo Group Setup
+    - name: Make sure we have a 'wheel' group
+      group:
+        name: wheel
+        state: present
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+  # User + Key Setup
+    - name: Create a new regular user with sudo privileges
+      user:
+        name: "{{ gitlab_runner_user }}"
+        state: present
+        groups: wheel
+        append: true
+        create_home: true
+        shell: /bin/bash
+
+    - name: Set authorized key for remote user
+      authorized_key:
+        user: "{{ gitlab_runner_user }}"
+        state: present
+        key: "{{ gitlab_runner_auth_key }}"
+
+    # - name: Disable password authentication for root
+    #   lineinfile:
+    #     path: /etc/ssh/sshd_config
+    #     state: present
+    #     regexp: '^#?PermitRootLogin'
+    #     line: 'PermitRootLogin prohibit-password'
+
+  # Install Packages
+    - name: Update apt
+      apt: update_cache=yes
+
+    - name: Install required system packages
+      apt: name={{ gitlab_runner_packages }} state=latest
+
+################################################################################
+# UFW Setup
+################################################################################
+
+    # - name: UFW - Allow SSH connections
+    #   ufw:
+    #     rule: allow
+    #     name: OpenSSH
+    # - name: UFW - Deny all other incoming traffic by default
+    #   ufw:
+    #     state: enabled
+    #     policy: deny
+    #     direction: incoming
