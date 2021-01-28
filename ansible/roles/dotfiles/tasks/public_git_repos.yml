@@ -1,0 +1,20 @@
+# TODO: it would be nice to lock down the versions.
+- name: Clone src repositories from github
+  git:
+    repo: "https://github.com/{{ item.src }}"
+    dest: "{{ dotfiles_dest }}/{{ item.dst }}/"
+  with_items:
+    - { src: "tmux-plugins/tpm.git", dst: ".tmux/plugins/tpm" }
+    - { src: "gmarik/vundle.git", dst: ".vim/bundle/vundle" }
+    - { src: "junegunn/vim-plug.git", dst: ".vim/bundle/vim-plug" }
+    - { src: "spf13/spf13-vim.git", dst: ".vim/spf13-vim" }
+    - { src: "Bash-it/bash-it.git", dst: ".bash_it" }
+
+- name: Clone src repositories from github at specific version
+  git:
+    repo: "https://github.com/{{ item.src }}"
+    dest: "{{ dotfiles_dest }}/{{ item.dst }}/"
+    version: "{{ item.version | d(omit) }}"
+  with_items:
+    - { src: "ngenetzky/home.git", dst: ".local/src/home", version: "live/virt-nateg-u18"}
+    - { src: "TheLocehiliosan/yadm.git", dst: ".local/src/yadm",  }

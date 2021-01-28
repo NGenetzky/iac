@@ -1,0 +1,74 @@
+- name: Make sure the required folders are present
+  file:
+    state: directory
+    path: "{{ item }}"
+    recurse: yes
+  with_items:
+    - "{{ dotfiles_dest }}/.config/nvim"
+    - "{{ dotfiles_dest }}/.local/bin"
+    - "{{ dotfiles_dest }}/.local/home"
+    - "{{ dotfiles_dest }}/.local/share"
+    - "{{ dotfiles_dest }}/.local/src"
+    - "{{ dotfiles_dest }}/.ssh"
+    - "{{ dotfiles_dest }}/.tmux/plugins"
+    - "{{ dotfiles_dest }}/.vim"
+    - "{{ dotfiles_dest }}/.vim/autoload"
+    - "{{ dotfiles_dest }}/.vim/bundle"
+
+# src 　Will accept absolute, relative and nonexisting paths. Relative paths are not expanded.
+# TODO: Check that destination exists?
+# [WARNING]: Cannot set fs attributes on a non-existent symlink target.
+# follow should be set to False to avoid this.
+- name: Create Symlinks for public files at top level
+  file:
+    src: ".home/{{ item.src }}"
+    dest: "{{ dotfiles_dest }}/{{ item.dst }}"
+    state: link
+    force: yes
+  with_items:
+    - { src: ".bash_login", dst: ".bash_login" }
+    - { src: ".bash_logout", dst: ".bash_logout" }
+    - { src: ".bash_profile", dst: ".bash_profile" }
+    - { src: ".bashrc", dst: ".bashrc" }
+    - { src: ".gitconfig", dst: ".gitconfig" }
+    - { src: ".profile", dst: ".profile" }
+    - { src: ".tmux.conf", dst: ".tmux.conf" }
+    - { src: ".vimrc", dst: ".vimrc" }
+    - { src: ".zshrc", dst: ".zshrc" }
+
+    # These have alternative locations:
+    # - { src: "aliases", dst: ".aliases" } # Put in .profile
+    # - { src: "exports", dst: ".exports" } # Put in .profile
+
+    # TODO: Future list of possible times
+    # - { src: "antibody_bundle", dst: ".antibody_bundle" }
+    # - { src: "bindings", dst: ".bindings" }
+    # - { src: "bindings_fzf", dst: ".bindings_fzf" }
+    # - { src: "dockerfunc", dst: ".dockerfunc" }
+    # - { src: "fzf", dst: ".fzf" }
+    # - { src: "fzf.zsh", dst: ".fzf.zsh" }
+    # - { src: "gdbinit", dst: ".gdbinit" }
+    # - { src: ".gitignore", dst: ".gitignore" }
+    # - { src: ".inputrc", dst: ".inputrc" }
+    # - { src: ".nanorc", dst: ".nanorc" }
+
+- name: Create Symlinks for public files in subdirs
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ dotfiles_dest }}/{{ item.dst }}"
+    state: link
+    force: yes
+  with_items:
+    - { src: "../../.home/nvim/init.vim", dst: ".config/nvim/init.vim" }
+    # Fully local
+    - { src: "../bundle/vim-plug/plug.vim", dst: ".vim/autoload/plug.vim" }
+    - { src: "../src/yadm/yadm", dst: ".local/bin/yadm" }
+    - { src: ".local/home/user", dst: ".home" }
+    - { src: "../src/home/home", dst: ".local/home/user" } # NOTE: This is just temporary
+
+    # - { src: "powerline-config", dst: ".config/powerline" }
+    # - { src: "powerline/powerline/bindings/tmux/powerline.conf", dst: ".powerline.conf" }
+    # - { src: "radare2rc", dst: ".radare2rc" }
+    # - { src: "ranger", dst: ".config/ranger" }
+    # - { src: "vim/colors", dst: ".vim/colors" }
+    # - { src: "vim/snippets", dst: ".vim/snippets" }
