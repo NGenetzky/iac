@@ -5,7 +5,7 @@
   get_url:
     url: https://github.com/NGenetzky.keys
     dest: "{{ dotfiles_dest }}/.ssh/github.com.ngenetzky.keys"
-    checksum: md5:d810c04ccc22bc7ed8724e8ee6337f69.
+    checksum: "{{ dotfiles__ssh_pub_gh_checksum }}"
 
 - name: Create tar archive on the Ansible controller
   # The > is a folding block operator. That is, it joins multiple lines together by spaces.
