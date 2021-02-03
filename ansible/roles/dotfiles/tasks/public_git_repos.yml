@@ -16,5 +16,7 @@
     dest: "{{ dotfiles_dest }}/{{ item.dst }}/"
     version: "{{ item.version | d(omit) }}"
   with_items:
-    - { src: "ngenetzky/home.git", dst: ".local/src/home", version: "live/virt-nateg-u18"}
     - { src: "TheLocehiliosan/yadm.git", dst: ".local/src/yadm",  }
+    - { src: "ngenetzky/home.git", dst: ".local/src/home", version: "live/virt-nateg-u18"}
+    - { src: "ohmybash/ohmybash.git", dst: ".oh-my-bash", version: "89e505415284619377df9d8dc73f033572e24621"}
+    - { src: "ohmyzsh/ohmyzsh.git", dst: ".oh-my-zsh", version: "452586e79a06d568a3445b26e6d6f4d62c111f52"}
