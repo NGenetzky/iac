@@ -1,13 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.155.1/containers/azure-ansible
 {
-	"name": "Azure Ansible (Community)",
+	"name": "ngenetzky-iac-ansible",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
-			"INSTALL_AZURE_CLI": "true",
+			"INSTALL_AZURE_CLI": "false", // VSC_NO_INSTALL_AZURE_CLI
 			"INSTALL_DOCKER": "true",
-			"INSTALL_NODE": "true"
+			"INSTALL_NODE": "true",
+			"USERNAME": "user", // VSC_CUSTOM_USER
+			"USER_UID": "1000", // VSC_CUSTOM_USER
 		}
 	},
 	"mounts": [
@@ -26,7 +28,7 @@
 	"extensions": [
 		"vscoss.vscode-ansible",
 		"redhat.vscode-yaml",
-		"ms-vscode.azurecli",
+		// "ms-vscode.azurecli", // VSC_NO_INSTALL_AZURE_CLI
 		"ms-azuretools.vscode-docker"
 	],
 
@@ -37,5 +39,5 @@
 	// "postCreateCommand": "ansible --version",
 
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	"remoteUser": "user" // VSC_CUSTOM_USER
 }
