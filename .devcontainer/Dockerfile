@@ -1,5 +1,10 @@
-# You can pick any Debian/Ubuntu-based image. 😊
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-buster
+# [Choice] Debian version: buster, stretch
+ARG VARIANT="buster"
+
+# You can pick any Debian/Ubuntu-based image.
+ARG FROM_IMAGE="buildpack-deps:${VARIANT}-curl"
+
+FROM ${FROM_IMAGE}
 
 COPY library-scripts/*.sh /tmp/library-scripts/
 
