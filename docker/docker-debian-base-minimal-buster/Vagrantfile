@@ -1,0 +1,25 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.provider "docker" do |d|
+    d.image = "jgoerzen/debian-base-minimal:18.04"
+    # d.has_ssh = true
+  end
+
+  # TODO: Do I need to upgrade vagrant?
+  # config.vm.provision "docker" do |d|
+  #   d.build_image = "./"
+  #   d.run "/usr/local/bin/boot-debian-base"
+  #   d.args "-t --stop-signal=SIGRTMIN+3 --tmpfs /run:size=100M --tmpfs /run/lock:size=100M -v /sys/fs/cgroup:/sys/fs/cgroup:ro"
+  #   d.restart = "unless-stopped"
+  #   d.auto_assign_name = true
+  #   d.daemonize = true
+  # end
+
+  # config.vm.provision "ansible" do |ansible|
+  #   ansible.playbook = "playbook.yml"
+  # end
+end
