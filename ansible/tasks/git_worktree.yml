@@ -1,0 +1,56 @@
+# -----------------------------------------------
+# ENSURE GIT REPOSITORIES
+
+- name: Git | Ensure server repository
+  sudo_user: git
+  git: repo={{ upstream }}
+        dest={{ repo_dir }}
+        bare=yes
+        update=no
+  tags: git
+
+- name: Git | Ensure repository set properly
+  lineinfile: dest={{ repo_dir }}/config
+              regexp="^\s*bare.?="
+              line="    bare = false"
+  tags: git
+
+- name: Git | Ensure proper worktree
+  lineinfile: dest={{ repo_dir }}/config
+              regexp='^\s*worktree.?='
+              line="    worktree = {{ work_dir }}"
+  tags: git
+
+- name: Git | Ensure work dir
+  file: path={{ work_dir }} state=directory
+        owner=git group=developers mode=0775
+  tags: git
+
+# -----------------------------------------------
+# GIT FETCH
+
+- name: Git | Fetching new changes
+  shell: chdir={{ repo_dir }} git fetch --prune && git fetch --tags
+  tags: git
+
+# -----------------------------------------------
+# GIT CHECKOUT
+
+- name: Git | Checkout version
+  command: chdir={{ repo_dir }} git checkout -f {{ version }}
+  tags: git
+
+# -----------------------------------------------
+# GIT SUBMODULES
+
+- name: Submodules | Syncing
+  command: chdir={{work_dir}} git --git-dir={{repo_dir}} submodule sync
+  tags:
+    - update
+    - git
+
+- name: Submodules | Updating
+  command: chdir={{work_dir}} git --git-dir={{repo_dir}} submodule update -f --init --recursive
+  tags:
+    - update
+    - git
