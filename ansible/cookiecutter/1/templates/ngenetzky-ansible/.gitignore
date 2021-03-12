@@ -1,4 +1,0 @@
-*.log
-*.retry
-.vagrant/
-build/
