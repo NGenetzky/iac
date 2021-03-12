@@ -1,9 +1,3 @@
-[submodule "ansible/cookiecutter/0/cookiecutter-ansible-playbook"]
-	path = ansible/cookiecutter/0/cookiecutter-ansible-playbook
-	url = https://github.com/inhumantsar/cookiecutter-ansible-playbook.git
-[submodule "ansible/cookiecutter/1/cookiecutter-simply-ansible"]
-	path = ansible/cookiecutter/1/cookiecutter-simply-ansible
-	url = https://github.com/building5/simply-ansible.git
 [submodule "ansible/ansible-play-ngenetzky-nas/roles/davestephens.nas/ansible-nas"]
 	path = ansible/ansible-play-ngenetzky-nas/roles/davestephens.nas/ansible-nas
 	url = https://github.com/davestephens/ansible-nas.git
