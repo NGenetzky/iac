@@ -1,0 +1,43 @@
+#cloud-config
+
+# Disable password authentication with the SSH daemon
+ssh_pwauth: false # only cert auth via ssh (console access can still login)
+disable_root: true
+ssh_import_id:
+  - gh:ngenetzky
+
+# timezone: set the timezone for this instance
+# the value of 'timezone' must exist in /usr/share/zoneinfo
+timezone: US/Central
+
+## Update apt database and upgrade packages on first boot
+package_update: true
+package_upgrade: true
+packages:
+  - sudo
+  - tmux
+
+hostname: ryan
+
+# Default user creation:
+#
+# Unless you define users, you will get a 'ubuntu' user on ubuntu systems with the
+# legacy permission (no password sudo, locked user, etc). If however, you want
+# to have the 'ubuntu' user in addition to other users, you need to instruct
+# cloud-init that you also want the default user. To do this use the following
+# syntax:
+users:
+  - default
+
+# users[0] (the first user in users) overrides the user directive.
+#
+# The 'default' user above references the distro's config:
+system_info:
+  default_user:
+    name: user
+    plain_text_passwd: 'ubuntu' # TODO: Remove
+    home: /home/user
+    shell: /bin/bash
+    lock_passwd: False # TODO: Remove
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: [adm, audio, cdrom, dialout, floppy, video, plugdev, dip, netdev]
