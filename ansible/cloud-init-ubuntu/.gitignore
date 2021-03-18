@@ -1,0 +1,18 @@
+
+# whitelist
+!/build/
+!/build/tftp
+!/build/tftp/meta-data
+!/build/tftp/pxelinux.0
+!/build/tftp/grub
+!/build/tftp/grub/grub.cfg
+!/build/tftp/user-data
+
+# dirs
+/build/cdrom
+
+# files
+*.iso
+initrd
+vmlinuz
+
