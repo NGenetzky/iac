@@ -6,7 +6,8 @@
   connection: local
   gather_facts: False
   vars:
-    tftproot: "{{playbook_dir}}/build/tftp/"
+    B: "{{playbook_dir}}/build/"
+    tftproot: "{{ B }}/tftp/"
     pxe_default_server: "192.168.122.1"
 
   tasks:
@@ -17,27 +18,27 @@
     - name: Download iso
       get_url:
         url: "http://old-releases.ubuntu.com/releases/20.04/ubuntu-20.04-live-server-amd64.iso"
-        dest: "{{tftproot}}/ubuntu-20.04-live-server-amd64.iso"
+        dest: "{{ B }}/ubuntu-20.04-live-server-amd64.iso"
         checksum: sha256:caf3fd69c77c439f162e2ba6040e9c320c4ff0d69aad1340a514319a9264df9f
         mode: 0666
 
     - name: Download iso
       get_url:
         url: "http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed"
-        dest: "{{tftproot}}/pxelinux.0"
+        dest: "{{ tftproot }}/pxelinux.0"
         checksum: sha256:279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463
 
     - name: "Extract the kernel and initramfs from the live server iso 1/2"
       args:
-        creates: "{{tftproot}}/vmlinuz"
+        creates: "{{ tftproot }}/vmlinuz"
       shell: |
-        isoinfo -i "{{tftproot}}/ubuntu-20.04-live-server-amd64.iso" -x /casper/vmlinuz > "{{tftproot}}/vmlinuz"
+        isoinfo -i "{{ tftproot }}/ubuntu-20.04-live-server-amd64.iso" -x /casper/vmlinuz > "{{ tftproot }}/vmlinuz"
 
     - name: "Extract the kernel and initramfs from the live server iso 2/2"
       args:
-        creates: "{{tftproot}}/initrd"
+        creates: "{{ tftproot }}/initrd"
       shell: |
-        isoinfo -i "{{tftproot}}/ubuntu-20.04-live-server-amd64.iso" -x /casper/initrd > "{{tftproot}}/initrd"
+        isoinfo -i "{{ tftproot }}/ubuntu-20.04-live-server-amd64.iso" -x /casper/initrd > "{{ tftproot }}/initrd"
 
     - file:
         path: "{{ tftproot }}/grub/"
