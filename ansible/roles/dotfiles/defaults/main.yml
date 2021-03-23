@@ -4,4 +4,4 @@
 dotfiles_dest: "{{ role_path }}/build/home/"
 dotfiles__include_vcs: True
 dotfiles__temp_tar_file: "ngenetzky-dotfiles.tar.gz"
-dotfiles__ssh_pub_gh_checksum: "md5:ca51e433e08aa93e8690631567b5c5f8."
+dotfiles__ssh_pub_gh_checksum: "md5:b1480c88242a2ffb9444bd2808bcf725."
