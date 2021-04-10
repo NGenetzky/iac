@@ -1,0 +1,42 @@
+PROJECT_NAME = File.basename(Dir.getwd)
+
+VAGRANTFILE_API_VERSION = 2
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.guest = :debian
+  config.vm.box = 'empty'
+
+  # config.vm.synced_folder '.', '/vagrant', type: 'nfs'
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.provider "libvirt" do |lv|
+    lv.memory = 4096
+    lv.cpus = 4
+    # lv.nested = true # nested virtualization.
+    # lv.random_hostname = true
+    # lv.autostart = false
+
+    # boot
+    # lv.boot 'network'
+    lv.boot 'cdrom'
+
+    # graphics
+    # lv.graphics_port = 5900
+    # lv.graphics_ip = '127.0.0.1'
+    # video_type - Sets the graphics card type exposed to the guest. Defaults
+    # to "cirrus". Possible values are "vga", "cirrus", "vmvga", "xen", "vbox",
+    # or "qxl".
+    # lv.video_type = 'qxl'
+    # lv.graphics_type = 'spice'
+    # lv.channel :type => 'unix', :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
+    # lv.channel :type => 'spicevmc', :target_name => 'com.redhat.spice.0', :target_type => 'virtio'
+
+    # storage
+    # lv.storage_pool_name = "vg_metapod_pool"
+    # lv.storage_pool_name = "mew-work-pool"
+    # lv.storage :file, :device => :cdrom, :path => '/var/lib/libvirt/images/neon_user_20210304_0945.iso'
+    lv.storage :file, :size => '100G', :path => PROJECT_NAME + '-disk0.qcow2', :allow_existing => true
+  end
+
+end
+
+# https://github.com/vagrant-libvirt/vagrant-libvirt
