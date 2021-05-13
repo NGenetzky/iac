@@ -1,0 +1,72 @@
+---
+
+# Hosts listed under [debops_all_hosts] will have common DebOps plays
+# ran against them. It will include services such as iptables, DNS, Postfix,
+# sshd configuration and more.
+#
+# View the list here:
+# https://github.com/debops/debops/blob/master/ansible/playbooks/common.yml
+#
+# You should check Getting Started guide for useful suggestions:
+# https://docs.debops.org/en/master/introduction/getting-started.html
+
+# Your host is eligible to be managed by DebOps' common playbook. If you want
+# that functionality and more, then uncomment your hostname below.
+
+################################################################################
+
+public_ngenetzky_debops_grml:
+  hosts:
+    grml: # {}
+
+  vars:
+
+    ############################################################################
+    # ansible
+    # ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q user@gateway.example.com"'
+    # ansible_ssh_private_key_file: ~/.ssh/id_rsa
+    ansible_host: "{{ inventory_hostname }}.{{ public_ngenetzky_domain }}"
+    ansible_python_interpreter: "/usr/bin/python3"
+    ansible_ssh_common_args: '-o hostname={{ inventory_hostname }}'
+    ansible_user: support
+    # ansible
+    ############################################################################
+
+    ############################################################################
+    # debops.system_users
+    # system_users__self: False # NOTE: We could disable instead.
+    system_users__self_name: 'support' # Would default to '{{ lookup("env", "USER") }}'
+    system_users__default_shell: '/bin/bash'
+    system_users__default_accounts: ['{{ public_ngenetzky_users.support }}']
+    # debops.system_users
+    ############################################################################
+
+    ############################################################################
+    # public_ngenetzky
+    public_ngenetzky_domain: 'genetzky.us'
+    public_ngenetzky_users:
+      support:
+        name: 'support'
+        group: 'support'
+        comment: 'NGenetzky Admin Support'
+        # home path is generated automatically
+        shell: '/bin/bash'
+        admin: True
+        sshkeys: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDtWUigSrqpQ7EetbaXZ17OEUaGni4+woHA4lxZqK65YkwvCPVYUkplLmTRQiTvsDQdoBBOca29kVxw2mfLdQs3kmANGI06cap5eIt43BbtONnjYlkNA/LxVEQs4r8OJm8LKKxgjdcPN71Q5wuOrP0qa2IUnXQSei3Wwrnu9A2CFYb83/pBn1yk2/kjS9NrABQ1vG4PvuX63KJy56fIGX0jF2DOxm99xRjdfc50ZFF/DmaI4AX5aWDm1oOOc8JuZyIoaw2DaarpMAl1RuQR1OQImdOFtWXdAxATzBWaX1i4J90kPYTh0QSvFBJDtnpf8oaZ3OhGhoj2lFsoJuzHUjvI+d73Cd4OUXJaFmXLa1kVIRtu/IK9ff/WXnzxZFLg5kHs2uVTf2agNMNchyl8CK2ugYHoAekREfLPJ0hLCDtnnkyvHe1lmsVkAEe8ZYMP2Mj1+Mzr3aaHXeOogMm0Wyh4IejGmSF/MctxnMaXcERcylB1ez4vjlSQlIlHSq3c+llFnHyEp3Dg3ufMY6hxTsLz8VCbY7S0CcHWokjSMN4fwp000kHQB9LggVwTbj0YzHTkQoKB9UV2ZM/Ey1OM+CF9NhDrybBiw5EQrbk7vHgnuG8mvRHsCeFlcngx5NVy3uC/Gc9mhe32y4DgMTAUC+OazhvFQYAr66l0fso3dFSCNw== Nathan Genetzky <nathan@genetzky.us>'
+        state: "present"
+    ############################################################################
+    # public_ngenetzky
+
+public_ngenetzky_debops_all:
+  children:
+    public_ngenetzky_debops_grml:
+
+debops_all_hosts:
+  children:
+    public_ngenetzky_debops_all:
+
+all:
+  hosts:
+  children:
+    public_ngenetzky_debops_all:
+
