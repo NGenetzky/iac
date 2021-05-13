@@ -28,7 +28,7 @@ public_ngenetzky_debops_grml:
     ansible_host: "{{ inventory_hostname }}.{{ public_ngenetzky_domain }}"
     ansible_python_interpreter: "/usr/bin/python3"
     ansible_ssh_common_args: '-o hostname={{ inventory_hostname }}'
-    ansible_user: support
+    #ansible_user: support
     # ansible
     ############################################################################
 
