@@ -20,7 +20,6 @@ public_ngenetzky_debops_grml:
     grml: # {}
 
   vars:
-
     ############################################################################
     # ansible
     # ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q user@gateway.example.com"'
@@ -31,6 +30,11 @@ public_ngenetzky_debops_grml:
     #ansible_user: support
     # ansible
     ############################################################################
+
+    ############################################################################
+    # debops
+    ####
+    #netbase__domain: '{{ public_ngenetzky_domain }}'
 
     ############################################################################
     # debops.system_users
@@ -49,6 +53,10 @@ public_ngenetzky_debops_grml:
     # debops.apt
     ############################################################################
 
+    ####
+    # debops
+    ############################################################################
+
     ############################################################################
     # public_ngenetzky
     public_ngenetzky_domain: 'genetzky.us'
@@ -62,8 +70,8 @@ public_ngenetzky_debops_grml:
         admin: True
         sshkeys: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDtWUigSrqpQ7EetbaXZ17OEUaGni4+woHA4lxZqK65YkwvCPVYUkplLmTRQiTvsDQdoBBOca29kVxw2mfLdQs3kmANGI06cap5eIt43BbtONnjYlkNA/LxVEQs4r8OJm8LKKxgjdcPN71Q5wuOrP0qa2IUnXQSei3Wwrnu9A2CFYb83/pBn1yk2/kjS9NrABQ1vG4PvuX63KJy56fIGX0jF2DOxm99xRjdfc50ZFF/DmaI4AX5aWDm1oOOc8JuZyIoaw2DaarpMAl1RuQR1OQImdOFtWXdAxATzBWaX1i4J90kPYTh0QSvFBJDtnpf8oaZ3OhGhoj2lFsoJuzHUjvI+d73Cd4OUXJaFmXLa1kVIRtu/IK9ff/WXnzxZFLg5kHs2uVTf2agNMNchyl8CK2ugYHoAekREfLPJ0hLCDtnnkyvHe1lmsVkAEe8ZYMP2Mj1+Mzr3aaHXeOogMm0Wyh4IejGmSF/MctxnMaXcERcylB1ez4vjlSQlIlHSq3c+llFnHyEp3Dg3ufMY6hxTsLz8VCbY7S0CcHWokjSMN4fwp000kHQB9LggVwTbj0YzHTkQoKB9UV2ZM/Ey1OM+CF9NhDrybBiw5EQrbk7vHgnuG8mvRHsCeFlcngx5NVy3uC/Gc9mhe32y4DgMTAUC+OazhvFQYAr66l0fso3dFSCNw== Nathan Genetzky <nathan@genetzky.us>'
         state: "present"
-    ############################################################################
     # public_ngenetzky
+    ############################################################################
 
 public_ngenetzky_debops_all:
   children:
