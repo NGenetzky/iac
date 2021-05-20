@@ -1,0 +1,14 @@
+
+VAGRANTFILE_API_VERSION = 2
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.guest = :debian
+  config.vm.provider "libvirt" do |lv|
+    lv.memory = 4096
+    lv.cpus = 4
+    lv.nested = true # nested virtualization.
+    lv.boot 'cdrom'
+    lv.storage :file, :device => :cdrom, :path => '/var/lib/libvirt/images/grml64-full_2020.06.iso'
+  end
+end
+
+# https://github.com/vagrant-libvirt/vagrant-libvirt
