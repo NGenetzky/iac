@@ -77,6 +77,8 @@ public_ngenetzky_debops_grml:
         state: "present"
     # public_ngenetzky
     ############################################################################
+     
+    ferm__enabled: False
 
 public_ngenetzky_debops_all:
   children:
