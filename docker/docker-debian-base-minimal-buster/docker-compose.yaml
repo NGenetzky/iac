@@ -1,0 +1,24 @@
+version: "3.3"
+services:
+  deb:
+    # image: jgoerzen/debian-base-standard:sid
+    build: ./
+    # command: "bash -c 'mount'"
+    volumes:
+      - vol_run_lock:/run/lock
+      - vol_run:/run
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    environment:
+      DEBBASE_SSH: enabled
+    ports:
+      - 127.0.0.1:1022:22
+
+volumes:
+  vol_run:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  vol_run_lock:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
