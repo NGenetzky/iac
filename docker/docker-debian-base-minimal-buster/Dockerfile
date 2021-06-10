@@ -1,6 +1,6 @@
 # https://github.com/jgoerzen/docker-debian-base-minimal
-# FROM "jgoerzen/debian-base-minimal"
-FROM "jgoerzen/debian-base-standard:sid"
+FROM "jgoerzen/debian-base-minimal"
+# FROM "jgoerzen/debian-base-standard:sid"
 
 RUN apt-get update \
     && apt-get -y install --no-install-recommends \
