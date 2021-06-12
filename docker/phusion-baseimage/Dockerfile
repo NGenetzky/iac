@@ -120,11 +120,11 @@ RUN apt-get --quiet --yes update \
         clang-format \
     ####
     # Additional tools installed with pip
-    && pip3 install --no-cache-dir \
-        pre-commit \
-        virtualenvwrapper \
-        datalad \
-        autopep8 \
+    # && pip3 install --no-cache-dir \
+    #     pre-commit \
+    #     virtualenvwrapper \
+    #     datalad \
+    #     autopep8 \
     #
     # Clean up
     && apt-get autoremove -y \
