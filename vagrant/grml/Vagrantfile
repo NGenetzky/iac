@@ -1,3 +1,4 @@
+PROJECT_NAME = 'vagrant-' + File.basename(Dir.getwd)
 
 VAGRANTFILE_API_VERSION = 2
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -5,10 +6,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider "libvirt" do |lv|
     lv.memory = 4096
     lv.cpus = 4
+    lv.cpu_mode = "host-passthrough"
     lv.nested = true # nested virtualization.
     lv.boot 'cdrom'
     lv.storage :file, :device => :cdrom, :path => '/var/lib/libvirt/images/grml64-full_2020.06.iso'
+    lv.storage :file, :size => '100G', :path => PROJECT_NAME + '-persistence.qcow2', :allow_existing => true
   end
+
+  config.vm.network "public_network"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 end
 
 # https://github.com/vagrant-libvirt/vagrant-libvirt
