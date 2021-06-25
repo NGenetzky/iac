@@ -15,9 +15,19 @@
 	"mounts": [
 		// [Optional] Anisble Collections: Uncomment if you want to mount your local .ansible/collections folder.
 		// "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ansible/collections,target=/root/.ansible/collections,type=bind,consistency=cached",
-		"source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind"
+
+		// "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind" // VSC_DOCKER
 	],
-	"overrideCommand": false,
+	"runArgs": [
+		// "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" // VSC_CPP
+		"--stop-signal=SIGRTMIN+3", // VSC_DEBASE
+		"--tmpfs", "/run:size=100M", // VSC_DEBASE
+		"--tmpfs", "/run/lock:size=100M", // VSC_DEBASE
+		"-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro", // VSC_DEBASE
+		"--name=debian-sid", // VSC_DEBASE
+	],
+	"overrideCommand": false, // VSC_DEBASE
+	"updateRemoteUserUID": false, // VSC_CUSTOM_USER
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
@@ -39,5 +49,5 @@
 	// "postCreateCommand": "ansible --version",
 
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "user" // VSC_CUSTOM_USER
+	"remoteUser": "user", // VSC_CUSTOM_USER
 }
