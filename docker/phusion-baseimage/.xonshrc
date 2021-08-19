@@ -1,0 +1,9 @@
+# XONSH WIZARD START
+$UPDATE_PROMPT_ON_KEYPRESS = '1'
+$VC_HG_SHOW_BRANCH = ''
+$VI_MODE = '1'
+$XONSH_CACHE_EVERYTHING = '1'
+$XONSH_HISTORY_SIZE = '2147483648 b'
+source-bash "echo loading xonsh foreign shell"
+xontrib load abbrevs apt_tabcomplete argcomplete coreutils fzf-widgets jedi powerline prompt_ret_code prompt_vi_mode sh
+# XONSH WIZARD END
