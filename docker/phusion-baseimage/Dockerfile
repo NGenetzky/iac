@@ -149,6 +149,12 @@ RUN \
         ${YOCTO_PYTHON_REQ} \
         ${EXTRA_PYTHON_REQ}
 
+RUN \
+    set -x && \
+    # python3 packages
+    python3 -m pip install --no-cache-dir --disable-pip-version-check \
+        xonsh[full]
+
 # Misc System level config
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -168,6 +174,10 @@ RUN \
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
 COPY ./rootfs/ /
+
+# Sane defaults for 'create-user'
+ENV BUILDER_UID 1000
+ENV BUILDER_GID 1000
 
 ################################################################################
 # phusion magic

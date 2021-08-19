@@ -110,6 +110,13 @@ enter: ## Start bash login shell in existing container
 		$(c_single) \
 		'/bin/bash' -l
 
+.PHONY: xonsh
+xonsh: ## Start bash login shell in existing container
+	docker-compose exec \
+		$(u) \
+		$(c_single) \
+		'xonsh'
+
 .PHONY: login
 login: ## Start bash login shell in existing container
 	docker-compose exec \
