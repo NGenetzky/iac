@@ -34,8 +34,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.box = "generic/ubuntu2004"
   # config.vm.box_version = ">= 2.0, <=3.0"
 
+  # NOTE: These are boxes ngenetzky has produced.
+  config.vm.box = "genetzky/focal64-desktop"
+  config.vm.box_version = ">= 1629990658, <=1640000000"
+
+  # NOTE: These are local boxes
   # config.vm.box = "genetzky-focaldesktop"
-  config.vm.box = 'ubuntu-20.04-amd64'
+  # config.vm.box = 'ubuntu-20.04-amd64'
 
   # Create a private network, which allows host-only access to the machine.
   # config.vm.network "private_network", ip: "192.168.33.10"
