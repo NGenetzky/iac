@@ -39,8 +39,24 @@ RUN rm -r '/etc/skel/' \
     #
     # [Optional] Add sudo support
     && echo "${USER_MAIN_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_MAIN_NAME}" \
-    && chmod 0440 "/etc/sudoers.d/${USER_MAIN_NAME}" \
-    && ssh-import-id gh:ngenetzky
+    && chmod 0440 "/etc/sudoers.d/${USER_MAIN_NAME}"
+
+ARG URL_KEYS="https://github.com/NGenetzky.keys"
+RUN \
+    # sshd config
+    mkdir /var/run/sshd \
+    && echo "AllowAgentForwarding yes" >> /etc/ssh/sshd_config \
+    ## ssh authorized key management
+    && install -m '0700' \
+        -o "${USER_MAIN_ID}" -g "${USER_MAIN_ID}" \
+        -d "/home/${USER_MAIN_NAME}/.ssh/" \
+    && wget "${URL_KEYS}" \
+        -O "/home/${USER_MAIN_NAME}/.ssh/authorized_keys" \
+    && chmod "0644" \
+        "/home/${USER_MAIN_NAME}/.ssh/authorized_keys" \
+    && chown "${USER_MAIN_ID}:${USER_MAIN_ID}" \
+        "/home/${USER_MAIN_NAME}/.ssh/authorized_keys"
+EXPOSE 22
 
 WORKDIR "/home/${USER_MAIN_NAME}/"
 
