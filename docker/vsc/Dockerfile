@@ -54,6 +54,7 @@ USER "${USER_MAIN_NAME}"
 WORKDIR "/home/${USER_MAIN_NAME}/"
 RUN git checkout 'origin/master' -b "live/$(hostname)" \
     && git reset --hard "${USER_MAIN_REF}" \
-    && "${HOME}/.yadm/bootstrap"
+    && "${HOME}/.yadm/bootstrap" \
+    && zsh -c 'source ~/.zshrc'
 
 CMD ["/usr/bin/tmux", "new-session", "-s", "a"]
