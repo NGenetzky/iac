@@ -27,19 +27,21 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Create 'main' user
-ARG USER_MAIN_ID=1000
-ARG USER_MAIN_NAME='user'
+ARG USER_UID=1000
+ARG USERNAME='user'
 ARG USER_MAIN_SHELL='/bin/bash'
 
 RUN rm -r '/etc/skel/' \
     #
     # Add user after we configure /etc/skel
-    && groupadd --gid "${USER_MAIN_ID}" "${USER_MAIN_NAME}" \
-    && useradd --shell "${USER_MAIN_SHELL}" --uid "${USER_MAIN_ID}" --gid "${USER_MAIN_ID}" -m "${USER_MAIN_NAME}" \
+    && groupadd --gid "${USER_UID}" "${USERNAME}" \
+    && useradd --shell "${USER_MAIN_SHELL}" --uid "${USER_UID}" --gid "${USER_UID}" -m "${USERNAME}" \
     #
     # [Optional] Add sudo support
-    && echo "${USER_MAIN_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_MAIN_NAME}" \
-    && chmod 0440 "/etc/sudoers.d/${USER_MAIN_NAME}"
+    && echo "${USERNAME} ALL=(ALL:ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USERNAME}" \
+    && chmod 0440 "/etc/sudoers.d/${USERNAME}"
+
+WORKDIR "/home/${USERNAME}/"
 
 ARG URL_KEYS="https://github.com/NGenetzky.keys"
 RUN \
@@ -48,16 +50,14 @@ RUN \
     && echo "AllowAgentForwarding yes" >> /etc/ssh/sshd_config \
     ## ssh authorized key management
     && install -m '0700' \
-        -o "${USER_MAIN_ID}" -g "${USER_MAIN_ID}" \
-        -d "/home/${USER_MAIN_NAME}/.ssh/" \
+        -o "${USER_UID}" -g "${USER_UID}" \
+        -d "/home/${USERNAME}/.ssh/" \
     && wget "${URL_KEYS}" \
-        -O "/home/${USER_MAIN_NAME}/.ssh/authorized_keys" \
+        -O "/home/${USERNAME}/.ssh/authorized_keys" \
     && chmod "0644" \
-        "/home/${USER_MAIN_NAME}/.ssh/authorized_keys" \
-    && chown "${USER_MAIN_ID}:${USER_MAIN_ID}" \
-        "/home/${USER_MAIN_NAME}/.ssh/authorized_keys"
+        "/home/${USERNAME}/.ssh/authorized_keys" \
+    && chown "${USER_UID}:${USER_UID}" \
+        "/home/${USERNAME}/.ssh/authorized_keys"
 EXPOSE 22
-
-WORKDIR "/home/${USER_MAIN_NAME}/"
 
 CMD ["/usr/local/bin/boot-debian-base"]
