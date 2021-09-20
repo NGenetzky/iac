@@ -167,6 +167,43 @@ RUN \
     echo 'dash dash/sh boolean false' | debconf-set-selections && \
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
+# More packages
+RUN \
+    set -x && \
+    # apt packages
+    apt-get update --yes && \
+    apt-get install --no-install-recommends --yes \
+        datalad \
+    && \
+    # Clean up
+    apt-get autoremove -y && \
+    apt-get clean --yes && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create 'main' user
+ARG USER_MAIN_ID=1000
+ARG USER_MAIN_NAME='user'
+ARG USER_MAIN_SHELL='/usr/bin/zsh'
+ARG USER_MAIN_REF='origin/ngenetzky/novo'
+
+RUN rm -r '/etc/skel/' \
+    && git clone 'https://github.com/NGenetzky/home.git' '/etc/skel/' \
+    #
+    # Add user after we configure /etc/skel
+    && groupadd --gid "${USER_MAIN_ID}" "${USER_MAIN_NAME}" \
+    && useradd --shell "${USER_MAIN_SHELL}" --uid "${USER_MAIN_ID}" --gid "${USER_MAIN_ID}" -m "${USER_MAIN_NAME}" \
+    #
+    # [Optional] Add sudo support
+    && echo "${USER_MAIN_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_MAIN_NAME}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_MAIN_NAME}"
+
+USER "${USER_MAIN_NAME}"
+WORKDIR "/home/${USER_MAIN_NAME}/"
+RUN git checkout 'origin/master' -b "live/$(hostname)" \
+    && git reset --hard "${USER_MAIN_REF}" \
+    && "${HOME}/.yadm/bootstrap" \
+    && zsh -c 'source ~/.zshrc'
+
 COPY ./rootfs/ /
 
 ################################################################################
