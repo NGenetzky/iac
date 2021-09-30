@@ -38,7 +38,7 @@
 	// "shutdownAction": "none", // "none" if you want your containers running after VS Code shuts down.
 	// "remoteEnv": { "PATH": "${containerEnv:PATH}:/some/other/path", "R_VAR1": "r_val1", "R_VAR2": "${localEnv:L_VAR1}" }
 	"remoteEnv": {
-		"BUILDER_UID": "${localEnv:GID}",
+		"BUILDER_UID": "${localEnv:UID}",
 		"BUILDER_GID": "${localEnv:GID}",
 	},
 
