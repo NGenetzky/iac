@@ -6,11 +6,12 @@ services:
   main:
     build:
       context: .
-    privileged: true
+    # privileged: true
     restart: always
     network_mode: host
     volumes:
-      - 'resin-data:/data'
+      # - 'resin-data:/data'
+      - '/data/:/data'
     labels:
       io.balena.features.kernel-modules: '1'
       io.balena.features.firmware: '1'
