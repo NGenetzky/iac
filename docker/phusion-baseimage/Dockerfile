@@ -1,12 +1,10 @@
+##################################################################################
 # phusion-ngenetzky Dockerfile
-
+#
 # References
 # - https://github.com/NGenetzky/iac/
 # - https://medium.com/@tonistiigi/advanced-multi-stage-build-patterns-6f741b852fae
-
-##################################################################################
-##################################################################################
-# FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
+#
 #
 # Use phusion/baseimage as base image. To make your builds reproducible, make
 # sure you lock down to a specific version, not to `latest`!
@@ -15,14 +13,13 @@
 # ___________________________________________________________
 # | Ubuntu LTS | Phusion | Notes from Phusion       |
 # |------------|---------|--------------------------|
+# |   18.04    | 1.0.0   | released on Jun 04, 2020 |
 # |   18.04    |  0.11   | released on Aug 16, 2018 |
 # |   16.04    | 0.9.22  | released on May 17, 2017 |
 #
-#########
-#########
+####
 
-FROM phusion/baseimage:0.11 as phusion-ngenetzky-0.11-r0
-COPY .docker/phusion/rootfs/ /
+FROM phusion/baseimage:bionic-1.0.0 as phusion-ngenetzky-bionic-1.0.0
 
 # Using "ARG" influences the behavior of apt only while building container.
 # No Debian that's a bad Debian! We don't have an interactive prompt don't fail
@@ -41,9 +38,9 @@ RUN apt-get --quiet --yes update \
         git \
         sudo \
     && git config --system \
-        user.name 'Nathan Genetzky' \
+        user.name 'User Phusion' \
     && git config --system \
-        user.email 'nathan@genetzky.us' \
+        user.email 'user@phusion-ngenetzky' \
     && ( \
         cd etc/ \
         && git init \
@@ -95,37 +92,6 @@ RUN apt-get --quiet --yes update \
         # python-setuptools \
         # python-wheel \
         #
-        ####
-        # Yocto
-        # https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#ubuntu-packages
-        build-essential \
-        chrpath \
-        cpio \
-        debianutils \
-        diffstat \
-        gawk \
-        gcc-multilib \
-        git-core \
-        iputils-ping \
-        python \
-        python3 \
-        python3-pexpect \
-        python3-pip \
-        socat \
-        texinfo \
-        unzip \
-        wget \
-        xz-utils \
-        # Other development tools
-        clang-format \
-    ####
-    # Additional tools installed with pip
-    && pip3 install --no-cache-dir \
-        pre-commit \
-        virtualenvwrapper \
-        datalad \
-        autopep8 \
-    #
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -144,141 +110,101 @@ RUN cd '/etc/skel/' \
             "'/usr/local/share/bash-sensible.bash'" \
     ) >> '/etc/skel/.bashrc'
 
-# Configuration for default non-root user.
-ARG USER_NAME='user'
-ARG USER_UID='1000'
-ARG USER_GID="$USER_UID"
-ARG USER_SHELL='/bin/bash'
-# Create non-root user and give them sudo with nopasswd.
-RUN printf "### Building image for user %s (%s:%s) ###" \
-        "${USER_NAME}" \
-        "${USER_UID}" \
-        "${USER_GID}" \
-    #
-    # Create a non-root user.
-    && groupadd --gid "$USER_GID" \
-        "$USER_NAME" \
-    && useradd --create-home --shell "${USER_SHELL}" \
-        --uid "${USER_UID}" --gid "${USER_GID}" \
-        "${USER_NAME}" \
-    #
-    # Add sudo support for the non-root user
-    && echo "$USER_NAME ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/$USER_NAME" \
-    && chmod 0440 "/etc/sudoers.d/$USER_NAME" \
-    #
-    # Setup directories for home user
-    && install -d --mode 0755 --owner "${USER_UID}" --group "${USER_GID}" \
-        # 'bin' for XDG Base Directory Specification
-        # https://www.freedesktop.org/software/systemd/man/file-hierarchy.html#Home%20Directory
-        "/home/$USER_NAME/bin" \
-        "/home/$USER_NAME/.local/" \
-        "/home/$USER_NAME/.local/bin" \
-        "/home/$USER_NAME/.local/share" \
-        # vscode remote-container support
-        "/home/$USER_NAME/workspace/" \
-        "/home/$USER_NAME/.vscode-server" \
-        "/home/$USER_NAME/.vscode-server/bin" \
-        "/home/$USER_NAME/.vscode-server/extensions" \
-    && install -d --mode 0775 --owner "${USER_UID}" --group "${USER_GID}" \
-        # vscode remote-container support
-        "/workspace/" \
-        "/workspaces/"
+# 2.6: https://www.yoctoproject.org/docs/2.6/mega-manual/mega-manual.html#required-packages-for-the-build-host
+# ARG YOCTO_APT_REQ="gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping"
+# https://github.com/crops/yocto-dockerfiles/blob/344ac54cba52bbca3a47fb89b5db1469a54e8d8f/dockerfiles/ubuntu/ubuntu-18.04/ubuntu-18.04-base/Dockerfile#L1
+ARG YOCTO_APT_REQ="gawk wget git-core subversion diffstat unzip sysstat texinfo gcc-multilib g++-multilib build-essential chrpath socat python python3 xz-utils locales cpio screen tmux sudo iputils-ping iproute2 fluxbox tightvncserver"
 
-# # ngnetzky-user-ssh-authorized_keys-from-github
-# ARG URL_KEYS="https://github.com/NGenetzky.keys"
-# RUN \
-#     echo "AllowAgentForwarding yes" >> '/etc/ssh/sshd_config' \
-#     ## ssh authorized key management
-#     && install -m '0700' \
-#         -o "${USER_UID}" -g "${USER_GID}" \
-#         -d "/home/${USER_NAME}/.ssh/" \
-#     && wget "${URL_KEYS}" \
-#         -O "/home/${USER_NAME}/.ssh/github-ngenetzky.keys" \
-#     && install -T -m '0600' \
-#         -o "${USER_UID}" -g "${USER_GID}" \
-#         "/home/${USER_NAME}/.ssh/github-ngenetzky.keys" \
-#         "/home/${USER_NAME}/.ssh/authorized_keys" \
-#     #####
-#     # WARNING: Phusion magic here
-#     && rm -f '/etc/service/sshd/down' \
-#     # Regenerate SSH host keys. baseimage-docker does not contain any, so you
-#     # have to do that yourself. You may also comment out this instruction; the
-#     # init system will auto-generate one during boot.
-#     && '/etc/my_init.d/00_regen_ssh_host_keys.sh'
-# EXPOSE 22
-
-################################################################################
-# WIP Layers
-####
-
-# ngnetzky-ubuntu-apt-layer2-special-or-wip
-RUN apt-get --quiet --yes update \
-    && apt-get -y install --no-install-recommends \
-        shellcheck \
-    ####
-    # Additional tools installed with pip
-    && pip3 install --no-cache-dir \
-        cookiecutter \
-        ipykernel \
-        jupyter \
-        jupyter-repo2docker \
-        jupytext \
-        nbconvert \
-        papermill \
-        ptpython \
-        pylint \
-        tmuxp \
-    #
+# setuptools required for to install kas with python3.
+# locales required to set LC_ALL for using bitbake.
+# 'file' is required "HOSTTOOL" for poky.
+# 'iproute2': 'ip' is required "HOSTTOOL" for poky.
+# 'iptables': 'iptables' is required to 'runqemu'
+ARG YOCTO_APT_REQ_APPEND="python3-setuptools locales file iproute2 iptables"
+ARG YOCTO_PYTHON_REQ="\
+kas==2.1.1 \
+PyYAML>=3.0 \
+distro>=1.0.0 \
+jsonschema>=2.5.0 \
+"
+ARG EXTRA_PYTHON_REQ="\
+virtualenvwrapper \
+tmuxp \
+"
+RUN \
+    set -x && \
+    # apt packages
+    apt-get update --yes && \
+    apt-get install --no-install-recommends --yes \
+        ${YOCTO_APT_REQ} \
+        ${YOCTO_APT_REQ_APPEND} \
+    && \
     # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get autoremove -y && \
+    apt-get clean --yes && \
+    rm -rf /var/lib/apt/lists/* && \
+    \
+    # python3 packages
+    python3 -m pip install --no-cache-dir --disable-pip-version-check \
+        ${YOCTO_PYTHON_REQ} \
+        ${EXTRA_PYTHON_REQ}
 
-# ngnetzky-ubuntu-docker
-RUN apt-get --quiet --yes update \
-    && apt-get -y install --no-install-recommends \
-        docker-compose \
-        docker.io \
-        git \
-        iproute2 \
-        procps \
-    ####
-    # Additional tools installed with pip
-    && pip3 install --no-cache-dir \
-        docker \
-    ####
-    # Enable the main user to use docker
-    && usermod -a -G "docker" "${USER_NAME}" \
-    #
+# Misc System level config
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+RUN \
+    # VNC
+    cp -af /etc/skel/ /etc/vncskel/ && \
+    echo "export DISPLAY=1" >>/etc/vncskel/.bashrc && \
+    mkdir  /etc/vncskel/.vnc && \
+    echo "" | vncpasswd -f > /etc/vncskel/.vnc/passwd && \
+    chmod 0600 /etc/vncskel/.vnc/passwd && \
+    \
+    # Locales
+    /usr/sbin/locale-gen en_US.UTF-8 && \
+    \
+    echo 'dash dash/sh boolean false' | debconf-set-selections && \
+    DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
+# More packages
+RUN \
+    set -x && \
+    # apt packages
+    apt-get update --yes && \
+    apt-get install --no-install-recommends --yes \
+        datalad \
+    && \
     # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get autoremove -y && \
+    apt-get clean --yes && \
+    rm -rf /var/lib/apt/lists/*
 
-####ARG USER_REF='origin/ngenetzky/novo'
-####USER "${USER_NAME}"
-####ARG HOME="/home/${USER_NAME}"
-####RUN rm \
-####        "${HOME}/.bash_logout" \
-####        "${HOME}/.bashrc" \
-####        "${HOME}/.profile" \
-####    && install -m 700 -d \
-####        "${HOME}/.ssh" \
-####    && yadm clone 'https://github.com/NGenetzky/home.git' \
-####    && yadm checkout 'origin/ngenetzky/novo' -b "live/$(hostname)" \
-####    && "${HOME}/.yadm/bootstrap" \
-####    # TODO: This should be in bootstrap
-####    && zsh -c 'source ~/.zshrc'
+# Create 'main' user
+ARG USER_MAIN_ID=1000
+ARG USER_MAIN_NAME='user'
+ARG USER_MAIN_SHELL='/usr/bin/zsh'
+ARG USER_MAIN_REF='origin/ngenetzky/novo'
 
-# Archive the home directory in case user want's to mount over it.
-####RUN tar -vcap \
-####    -f "/usr/share/home-${USER_NAME}.tar.xz" \
-####    -C "/home/${USER_NAME}" \
-####    ./
+RUN rm -r '/etc/skel/' \
+    && git clone 'https://github.com/NGenetzky/home.git' '/etc/skel/' \
+    #
+    # Add user after we configure /etc/skel
+    && groupadd --gid "${USER_MAIN_ID}" "${USER_MAIN_NAME}" \
+    && useradd --shell "${USER_MAIN_SHELL}" --uid "${USER_MAIN_ID}" --gid "${USER_MAIN_ID}" -m "${USER_MAIN_NAME}" \
+    #
+    # [Optional] Add sudo support
+    && echo "${USER_MAIN_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USER_MAIN_NAME}" \
+    && chmod 0440 "/etc/sudoers.d/${USER_MAIN_NAME}"
 
-####
-# WIP Layers
-################################################################################
+USER "${USER_MAIN_NAME}"
+WORKDIR "/home/${USER_MAIN_NAME}/"
+RUN git checkout 'origin/master' -b "live/$(hostname)" \
+    && git reset --hard "${USER_MAIN_REF}" \
+    && "${HOME}/.yadm/bootstrap" \
+    && zsh -c 'source ~/.zshrc'
+
+COPY ./rootfs/ /
 
 ################################################################################
 # phusion magic

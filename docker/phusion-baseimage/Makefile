@@ -37,9 +37,13 @@ DOCKER_COMPOSE_FILE := $(DIR)/docker-compose.yml
 C_SINGLE_DEFAULT=main
 USER_NAME=user
 
+BUILDER_UID := $(shell id -u)
+BUILDER_GID := $(shell id -g)
+export BUILDER_UID BUILDER_GID
+
 # arguments
 c :=
-u := --user '$(shell id -u):$(shell id -g)'
+u := --user '$(BUILDER_UID):$(BUILDER_GID)'
 c_single := $(if $(c),$(c),$(C_SINGLE_DEFAULT))
 
 #
@@ -51,7 +55,8 @@ up: ## Start all or c=<name> containers in foreground
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c)
 
 start: ## Start all or c=<name> containers in background
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d $(c)
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) start $(c)
+# @$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up $(c) -d # TODO: up or start?
 
 stop: ## Stop all or c=<name> containers
 	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) stop $(c)
