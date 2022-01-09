@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "github.vscode-pull-request-github",
+        "ms-azuretools.vscode-docker"
+        "vscodevim.vim",
+    ]
+}
