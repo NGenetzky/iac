@@ -15,14 +15,15 @@ kernel=uboot_rpi_4.bin
 max_framebuffers=2
 
 [pi2]
-kernel=uboot_rpi_2.bin
+#kernel=uboot_rpi_2.bin
 
 [pi3]
-kernel=uboot_rpi_3.bin
+#kernel=uboot_rpi_3.bin
 
 [all]
 arm_64bit=1
-device_tree_address=0x03000000
+#device_tree_address=0x03000000
+initramfs initrd.img followkernel
 
 # The following settings are "defaults" expected to be overridden by the
 # included configuration. The only reason they are included is, again, to
