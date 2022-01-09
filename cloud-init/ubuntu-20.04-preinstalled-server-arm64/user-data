@@ -175,10 +175,8 @@ resize_rootfs: True
 
 ## hostname and /etc/hosts management
 # Set the hostname and FQDN
-# hostname: "roze"
-# fqdn: "roze.genetzky.us"
-hostname: "ryder"
-fqdn: "ryder.genetzky.us"
+hostname: "roze"
+fqdn: "roze.genetzky.us"
 # Set our hostname in /etc/hosts too
 manage_etc_hosts: true
 
