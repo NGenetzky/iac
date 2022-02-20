@@ -1,0 +1,5 @@
+# <username>;<uid>;<comment>;<email>;<password>;<shell>;<groupname,groupname,...>;<disallowusermod>
+user;1000;;nathan@genetzky.us;TODO;/bin/rbash;users;yes
+nate;1001;;nathan@genetzky.us;TODO;/bin/bash;users;yes
+megan;1002;;megan@genetzky.us;TODO;/bin/rbash;users;yes
+ngenetzky;1337;;nathan@genetzky.us;TODO;/bin/bash;adm,dialout,dip,netdev,plugdev,sambashare,staff,sudo,users;no
