@@ -1,0 +1,78 @@
+---
+# Reference:
+# - https://itectec.com/ubuntu/ubuntu-automated-20-04-server-installation-using-pxe-and-live-server-image/
+
+- hosts: local
+  connection: local
+  gather_facts: False
+  vars:
+    B: "{{playbook_dir}}/build/"
+    tftproot: "{{ B }}/tftp/"
+    pxe_default_server: "192.168.122.1"
+
+  tasks:
+    - file:
+        path: "{{ tftproot }}"
+        state: directory
+
+    - name: Download iso
+      get_url:
+        url: "http://old-releases.ubuntu.com/releases/20.04/ubuntu-20.04-live-server-amd64.iso"
+        dest: "{{ B }}/ubuntu-20.04-live-server-amd64.iso"
+        checksum: sha256:caf3fd69c77c439f162e2ba6040e9c320c4ff0d69aad1340a514319a9264df9f
+        mode: 0666
+
+    - name: Download iso
+      get_url:
+        url: "http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed"
+        dest: "{{ tftproot }}/pxelinux.0"
+        checksum: sha256:279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463
+
+    - name: "Extract the kernel and initramfs from the live server iso 1/2"
+      args:
+        creates: "{{ tftproot }}/vmlinuz"
+      shell: |
+        isoinfo -i "{{ tftproot }}/ubuntu-20.04-live-server-amd64.iso" -x /casper/vmlinuz > "{{ tftproot }}/vmlinuz"
+
+    - name: "Extract the kernel and initramfs from the live server iso 2/2"
+      args:
+        creates: "{{ tftproot }}/initrd"
+      shell: |
+        isoinfo -i "{{ tftproot }}/ubuntu-20.04-live-server-amd64.iso" -x /casper/initrd > "{{ tftproot }}/initrd"
+
+    - file:
+        path: "{{ tftproot }}/grub/"
+        state: directory
+    - template:
+        src: "grub.cfg.j2"
+        dest: "{{ tftproot }}/grub/grub.cfg"
+
+    - lineinfile:
+        path: "{{ tftproot }}/meta-data"
+        line: "instance-id: focal-autoinstall"
+        create: yes
+    # - template:
+    #     src: cloud_init__meta_data.yml.j2
+    #     dest: "{{cloud_init__dest}}/meta-data"
+
+    - template:
+        src: cloud_init__user_data.yml.j2
+        dest: "{{ tftproot }}/user-data"
+
+    # - shell: |
+    #     virsh net-edit default && virsh net-destroy default && virsh net-destroy default
+    # NOTE: THis was output
+    # <network>
+    #   <name>default</name>
+    #   <uuid>0be32357-f0d2-49d8-b38d-73a3e0610614</uuid>
+    #   <forward mode='nat'/>
+    #   <bridge name='virbr0' stp='on' delay='0'/>
+    #   <mac address='52:54:00:ea:1e:44'/>
+    #   <ip address='192.168.122.1' netmask='255.255.255.0'>
+    #     <tftp root='/srv/libvirt-tftp/'/>
+    #     <dhcp>
+    #       <range start='192.168.122.2' end='192.168.122.254'/>
+    #       <bootp file='pxelinux.0'/>
+    #     </dhcp>
+    #   </ip>
+    # </network>
