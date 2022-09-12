@@ -1,7 +1,40 @@
 #cloud-config
+# https://gist.github.com/RichardBronosky/fa7d4db13bab3fbb8d9e0fff7ea88aa2
+# https://gist.github.com/RenEvo/6a9e244b670df334c42578b8fe95400b
+
+# Set your hostname here, the manage_etc_hosts will update the hosts file entries as well
+# update /etc/hosts according to hostname (otherwise sudo will complain)
+hostname: raspberry-0
+manage_etc_hosts: true
+
+# Set the locale of the system
+locale: "en_US.UTF-8"
+
+# Set the timezone
+# Value of 'timezone' must exist in /usr/share/zoneinfo
+timezone: "America/Chicago"
+
+# This expands the root volume to the entire SD Card, similar to what the raspbian images did on first boot.
+# This doesn't seem to be required, its more here for posterity in understanding what is going on
+resize_rootfs: true
+growpart:
+  mode: auto
+  devices: ["/"]
+  ignore_growroot_disabled: false
+
+# Update our packages on first boot, saves us some time
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+
 packages:
- - vim
- - python3-pip
+  - ntp # I add ntp because.. without it, rpi is useless in keeping track of time.
+  - python3-pip
+  - vim
+
+users:
+- default # pi user
+
 ssh_authorized_keys:
   - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBACaun+Mwa1SJOiBJ3m8Ms3GGca1570LpxqWYG1O93VEGGHAIy3eW79wPGGHFEBaGm/7/4/awJAYh/1MdXXhpACljwByXp3YO1xI8BFPM0PX1uNsVfdQCf4WC2kQuZ3sdpOn6k3QT96ceGAWg2U+TmkMC5QqKBiQpLffgMtbsNoGOmdrAw== ngenetzky@github/68414559 # ssh-import-id gh:ngenetzky
   - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBADhNa4uAZ+0f8Du7Ey9R6A+SW8YYUEvZjR8CyK7cqdYgz0VKlXkscnyDQBKoUYlqp0warknceXGbkxbhSqbvaVEVwF6Bxt47jfj4IO0FZqyBKNSwqVgKtbZPzT9nZMGFrDzVN+UP5/OyfWpvAS1ekxelx5A05+L7FG5/BOOSmncxQxigw== ngenetzky@github/59650339 # ssh-import-id gh:ngenetzky
@@ -13,3 +46,40 @@ ssh_authorized_keys:
   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDK0EYRpukfVuhj0m10EOKeKqHIo+7xynwTHAEagi1G3/4CV2xTUlMJ07GJvw4ZDHsGDQ7y4j2Nc6XYrnPDsDYEeFjG1R+X0rmycwdT1rAgSd3g+kL0KFcVvP5klDsr5Qxf4URU+Y2yyfyehPxNcjBuqr1sMjY30/VY4CjRGHYdDqnrt71dulKJH5vxn+EA/0ZiuN70C3gcsfEVMt35LCClBUdYy/TR4QrPtPRtcIhFjhob3hjAU/s2FygTRGNS7FF8ZQhD20rtH9k9UmpSi7yX0ubVNBDPnb61cYXjQTKDw8QXss0Fajl3Z+6SXGYLRIdtTxwDT/EKqwptI3cannHeO64pGTIvrJKe6HSoTCAOR3bD//HWc1+pxyPf2Rc4wvSBcz4sM982uPn5UhjeMZF4O0n/HCotctCdP+PslMWJDa1ywKVB/+8Wsrq9sYuBPM/4XXUQh/iLlEYyA5H/le4fQ2GcAFhVrp3taFz2mEZeXdu/AOT8gbK/iA30JPStup0= ngenetzky@github/62643224 # ssh-import-id gh:ngenetzky
   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/iOFYf2KFyLHw30uqpd4FhoBM+c+zlhw7OpYRxY6Ih2B42rKYDOWpqH1+PuDvvYRiE47LRrBBTjOGo8LcV+cdiHDAAXKfOSIUy2MW3WLLcIv12z763DKET7LheOEHKG2dLo7BSAgDopngNLjnnXPqzCM5f8XKkJwRrOnsqw+O10/Oh5/crsjeHrHbUtnQpHSqEhiLtysg/llaBeyRgNBSHrDe6sRQNUe9zOPQ/sGoSV6yoxM8P2l5bT7Wbo78KanrVl7+U+77y9YRtrNDXBzrR7yREDVfQ771kk/gE5RhBpO8ZPgKJJx5/09ZD63w77eY1b2wFfja8EG2rMPxhDXKFGeO8tn3TFxrYwdacb7bG+p1e30Fa2/U6vKO2pByoLtMDnf3IWX+ft1CJZDmFgSB/jbS5Wqi1EYabz/DHt9Dh2rgPoVaM5YQVnyY+5P82RBJylTJQnezxxqm/sdys6dXqGihUbjPBrrLL5CH5Pl2s5sf5v+Qr+NnwNZcHj6WsnDSAnIBp5fknxauWqCK3sqMo6Ux5oB1/79SCLmR/FMZ9BfejycW7vSz69rn/WmpljWW8nCw4DmqKtg06EY9vZc/mQT+VjTNPaL5VAxydEUnW+Bx20sfDth4xEcLLpI9yTVnd9/tneMikbnTbPBYrdytKHFjzKegFYUOYvgihpdPfQ== ngenetzky@github/60116622 # ssh-import-id gh:ngenetzky
   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDevDlTTfIOpvmsEowyEfZn0uLglGe0HC5JE2Z9fMOs7Bkcjr2QlMnwgWKIrVVray4V8r1vMdavU2uqO3yhoI6nqypc9dm/4hcgsfmY/RSwCNngAs5BkK4Dn37vcbaXYvYwJ4z2E0akNL6FEipck5MVRRRQIo6bDpEQRGrUjB2Kxo2fxNPM8vOOmHKUBl8t2hljBjujrbWLnzo05VrkXJ2hhk2UbOPWwfpsBD8+30vi5tfmCiabijKT1WHYzzKUPBWdmNKnjHmKFyGUmg0ZFswh8pIPFAabaRCXkGvTd4TTbA0NV3NGRXoZ8bvVYE3220ZeBHhJoe13GMTLyd+rYiKEgPHUu+kmqCAlhM/SlPzbmZBmUAhGhXQ9HEoeuF3z/K+kXS0al/TlIlq48/NE5zQYdnCFK1puJGtUiCTb2zgK53FWa5GhZf/fVWiabw4QuObaXoqOgH9zzNBcTLxSN9hx10CERsb7ZaJEfHsc7bwNmV5udWcWeOAgnnG3M5V0MzMq3P1LSoOW6xYzqnWKKzKCzt0cZyTvAlaPPO43wh8k6OpHrGKVwPlMcCLsO7DLY8pTy8FuGxPcqLr4dMe8J8j4sGzJFstes3XJm0m/pqTadrIc1oKHSBTS6U9/TtoArQA4i8mOxoeK2hLpxwRPYUyz1PUu4XdJvpoAxt/RnfdhdQ== ngenetzky@github/60364363 # ssh-import-id gh:ngenetzky
+
+# set to true to allow ssh password authentication (disabled by default)
+ssh_pwauth: false
+
+bootcmd:
+# disable ipv6 on all interfaces
+- sysctl net.ipv6.conf.all.disable_ipv6=1
+
+write_files:
+
+# Tell docker to tag this node appropriately
+# Currently we need the experimental?
+- path: "/etc/docker/daemon.json"
+  owner: "root:root"
+  content: |
+    {
+      "labels": [ "os=linux", "arch=arm64" ],
+      "experimental": true
+    }
+
+- path: /var/lib/cloud/scripts/per-boot/01-hello-world.sh
+  permissions: "0744"
+  content: |
+    #!/bin/bash
+    echo "Hello cloud-init on Raspberry Pi!"
+    date > /tmp/per-boot-was-here
+- path: /var/lib/cloud/scripts/per-once/01-hello-world.sh
+  permissions: "0744"
+  content: |
+    #!/bin/bash
+    echo "Hello cloud-init on Raspberry Pi!"
+    date > /tmp/per-once-was-here
+
+# These commands will be ran once on first boot only
+runcmd:
+  # Pickup the hostname changes
+  - [ systemctl, restart, avahi-daemon ]
