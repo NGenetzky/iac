@@ -1,6 +1,15 @@
 # Makefile
 
 ################################################################################
+# vscode Makefile extension
+
+# Generating configuration cache with command: 'make --dry-run --always-make --keep-going --print-directory'
+# Generating targets information with command: 'make all --print-data-base --no-builtin-variables --no-builtin-rules --question'
+# Writing the dry-run output: ~/.config/Code/User/workspaceStorage/9c159f88d703dd69136e40525ac01830/ms-vscode.makefile-tools/targets.log
+
+################################################################################
+
+################################################################################
 # util-makefile
 ####
 
