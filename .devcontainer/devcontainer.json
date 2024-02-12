@@ -38,17 +38,22 @@
 	"updateRemoteUserUID": false, // VSC_CUSTOM_USER
 
 	// Set *default* container specific settings.json values on container create.
-	"settings": {
-		"terminal.integrated.shell.linux": "/bin/bash"
+	"customizations": {
+		"vscode":{
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"vscoss.vscode-ansible",
+				"redhat.vscode-yaml",
+				// "ms-vscode.azurecli", // VSC_NO_INSTALL_AZURE_CLI
+				"ms-azuretools.vscode-docker"
+			],
+
+			"settings": {
+				"terminal.integrated.shell.linux": "/bin/bash"
+			},
+		}
 	},
 
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"vscoss.vscode-ansible",
-		"redhat.vscode-yaml",
-		// "ms-vscode.azurecli", // VSC_NO_INSTALL_AZURE_CLI
-		"ms-azuretools.vscode-docker"
-	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [ 22 ],

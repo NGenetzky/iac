@@ -55,30 +55,44 @@
 	// "forwardPorts": [],
 	// "dev": [],
 
-	"extensions": [
-		"Braver.vscode-solarized",
-		"CoenraadS.bracket-pair-colorizer",
-		"PKief.material-icon-theme",
-		"YoshinoriN.current-file-path",
-		"alefragnani.Bookmarks",
-		"alefragnani.project-manager",
-		"chrislajoie.vscode-modelines",
-		"codezombiech.gitignore",
-		"eamodio.gitlens",
-		"emilast.LogFileHighlighter",
-		"fabiospampinato.vscode-terminals",
-		"letmaik.git-tree-compare",
-		"ms-python.python",
-		"ms-vscode.cpptools",
-		"ryuta46.multi-command",
-		"vscodevim.vim",
-		"yzhang.markdown-all-in-one",
-		"redhat.vscode-yaml",
-		"marklarah.pre-commit-vscode",
-		"austin.code-gnu-global",
-		"davidanson.vscode-markdownlint",
-		"donjayamanne.githistory"
-	],
-	// "settings":  {},
+
+	"customizations": {
+		"vscode":{
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"Braver.vscode-solarized",
+				"CoenraadS.bracket-pair-colorizer",
+				"PKief.material-icon-theme",
+				"YoshinoriN.current-file-path",
+				"alefragnani.Bookmarks",
+				"alefragnani.project-manager",
+				"austin.code-gnu-global",
+				"chrislajoie.vscode-modelines",
+				"codezombiech.gitignore",
+				"davidanson.vscode-markdownlint",
+				"donjayamanne.githistory"
+				"eamodio.gitlens",
+				"emilast.LogFileHighlighter",
+				"fabiospampinato.vscode-terminals",
+				"letmaik.git-tree-compare",
+				"marklarah.pre-commit-vscode",
+				"ms-python.python",
+				"ms-vscode.cpptools",
+				"redhat.vscode-yaml",
+				"ryuta46.multi-command",
+				"vscodevim.vim",
+				"yzhang.markdown-all-in-one",
+
+				// "vscoss.vscode-ansible",
+				// "ms-azuretools.vscode-docker"
+				// "ms-vscode.azurecli", // VSC_NO_INSTALL_AZURE_CLI
+			],
+
+			// "settings":  {},
+			"settings": {
+				"terminal.integrated.shell.linux": "/bin/bash"
+			},
+		}
+	},
 
 }
