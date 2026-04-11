@@ -1,3 +1,0 @@
-[submodule "ansible/ansible-play-ngenetzky-nas/roles/davestephens.nas/ansible-nas"]
-	path = ansible/ansible-play-ngenetzky-nas/roles/davestephens.nas/ansible-nas
-	url = https://github.com/davestephens/ansible-nas.git
