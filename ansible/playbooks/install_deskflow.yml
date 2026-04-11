@@ -1,0 +1,35 @@
+---
+- name: Install Deskflow on Ubuntu 24.04
+  hosts: ubuntu_nodes
+  become: true
+  vars:
+    # Update this version as new releases come out
+    deskflow_version: "1.26.0"
+    deb_url: "https://github.com/deskflow/deskflow/releases/download/v{{ deskflow_version }}/deskflow-{{ deskflow_version }}-ubuntu-noble-x86_64.deb"
+
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: 
+          - libqt6widgets6
+          - libqt6network6
+          - libqt6gui6
+        state: present
+        update_cache: yes
+
+    - name: Download Deskflow .deb package
+      ansible.builtin.get_url:
+        url: "{{ deb_url }}"
+        dest: "/tmp/deskflow.deb"
+        mode: '0644'
+
+    - name: Install Deskflow package
+      ansible.builtin.apt:
+        deb: "/tmp/deskflow.deb"
+        state: present
+
+    - name: Open Deskflow firewall port (24800)
+      community.general.ufw:
+        rule: allow
+        port: '24800'
+        proto: tcp
