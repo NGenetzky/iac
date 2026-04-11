@@ -1,5 +1,5 @@
 # [Choice] Debian version: buster, stretch
-ARG VARIANT="buster"
+ARG VARIANT="stretch"
 
 # [Choice] Debian version: standard, security, vnc
 ARG DEBASE_VARIANT="standard"
