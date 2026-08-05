@@ -5,6 +5,7 @@
 - Implementation is driven by the automation maintainer for each modernization task.
 - Review feedback is expected on every pull request before merge.
 - Optional reviewer commits are welcome on active pull request branches.
+- GitHub Copilot agent behavior for this repository is defined in .github/copilot-instructions.md.
 
 ## Branch and Pull Request Workflow
 
@@ -16,7 +17,7 @@
 ## Pull Request Checklist
 
 - Scope is focused and does not include unrelated edits.
-- Risk impact is documented.
+- Operational and security impact is documented.
 - Validation evidence is attached.
 - Follow-up tasks are identified if needed.
 

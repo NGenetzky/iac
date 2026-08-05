@@ -21,7 +21,7 @@ This repository contains infrastructure automation for home and lab environments
 
 1. Clone the repository.
 2. Review CONTRIBUTING.md for workflow and validation requirements.
-3. Review GOVERNANCE.md for risk tiers and approval gates.
+3. Review .github/copilot-instructions.md for GitHub Copilot agent rules.
 4. Start work from a short-lived branch.
 
 ## Delivery Model
@@ -42,3 +42,7 @@ Current baseline varies by subdirectory and is being standardized. Typical check
 ## Documentation Status
 
 This root documentation is the baseline for modernization and will be expanded as workflows are standardized.
+
+## Agent Configuration
+
+Repository-specific GitHub Copilot agent behavior is defined in .github/copilot-instructions.md.
