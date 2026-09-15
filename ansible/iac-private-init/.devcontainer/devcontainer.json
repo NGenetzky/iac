@@ -1,0 +1,20 @@
+// Builds on top of the primary ../Dockerfile image used by generate.sh/Makefile.
+{
+	"name": "iac-private-init",
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	},
+	"workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspace,type=bind",
+	"workspaceFolder": "/workspace/iac-private-init",
+	"remoteUser": "user",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscoss.vscode-ansible",
+				"redhat.vscode-yaml"
+			]
+		}
+	},
+	"postCreateCommand": "ansible --version"
+}

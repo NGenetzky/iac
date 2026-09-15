@@ -1,0 +1,7 @@
+#!/bin/bash
+set -eu -o pipefail
+
+export ANSIBLE_LOG_PATH=".ansible_log.log"
+
+set -x
+debops "$@"

@@ -1,0 +1,22 @@
+---
+# Hosts under [{{ inv.name }}_debops_hosts] get the common DebOps plays.
+# See: https://docs.debops.org/en/master/introduction/getting-started.html
+
+{{ inv.name }}_debops_hosts:
+  hosts: {}
+  # example-host: {}
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3"
+
+{{ inv.name }}_debops_all:
+  children:
+    {{ inv.name }}_debops_hosts:
+
+debops_all_hosts:
+  children:
+    {{ inv.name }}_debops_all:
+
+all:
+  hosts:
+  children:
+    {{ inv.name }}_debops_all:

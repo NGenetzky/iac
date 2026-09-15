@@ -1,0 +1,13 @@
+# -*- conf -*-
+
+[paths]
+;data-home: /opt/debops
+
+[ansible defaults]
+display_skipped_hosts = False
+retry_files_enabled = False
+stdout_callback = yaml
+inventory = ansible/inventory
+
+[ansible inventory]
+host_pattern_mismatch = ignore

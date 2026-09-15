@@ -1,0 +1,10 @@
+.PHONY: list-inventories
+list-inventories:
+	@ls inventories
+
+# Usage: make vault-edit INV=home FILE=group_vars/all/vars.yml
+.PHONY: vault-edit
+vault-edit:
+	@test -n "$(INV)" && test -n "$(FILE)" || \
+		(echo "usage: make vault-edit INV=<name> FILE=<path>" >&2; exit 1)
+	ansible-vault edit "inventories/$(INV)/$(FILE)"

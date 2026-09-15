@@ -1,0 +1,20 @@
+---
+- name: "Create DebOps inventory directories: {{ inv.name }}"
+  ansible.builtin.file:
+    path: "{{ iac_private_dest }}/inventories/{{ inv.name }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - ansible/inventory
+    - ansible/playbooks
+
+- name: "Render DebOps inventory files: {{ inv.name }}"
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ iac_private_dest }}/inventories/{{ inv.name }}/{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop:
+    - { src: debops/debops.cfg.j2, dest: .debops.cfg }
+    - { src: debops/run.debops.sh.j2, dest: run.debops.sh, mode: "0755" }
+    - { src: debops/hosts.yml.j2, dest: ansible/inventory/hosts.yml }
+    - { src: debops/README.md.j2, dest: README.md }

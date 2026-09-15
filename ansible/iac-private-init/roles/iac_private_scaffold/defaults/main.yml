@@ -1,0 +1,14 @@
+---
+iac_private_scaffold_force: false
+iac_private_scaffold_git_init: true
+
+iac_private_scaffold_inventories:
+  - name: debops
+    type: debops
+    description: "Hosts managed with DebOps common roles"
+  - name: home
+    type: vanilla
+    description: "Home lab hosts managed with plain ansible-playbook"
+  - name: lab
+    type: vanilla
+    description: "Disposable / experimental hosts"

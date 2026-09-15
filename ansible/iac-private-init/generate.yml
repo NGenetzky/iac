@@ -1,0 +1,12 @@
+---
+# Scaffold a new private "iac-private" repository.
+#
+# Usage: ansible-playbook generate.yml -e dest=~/git/iac-private
+- name: Scaffold a private iac-private repository
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    iac_private_dest: "{{ dest | mandatory }}"
+  roles:
+    - role: iac_private_scaffold

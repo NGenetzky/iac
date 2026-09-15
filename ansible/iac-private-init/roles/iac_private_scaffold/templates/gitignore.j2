@@ -1,0 +1,16 @@
+# Ansible
+*.retry
+.ansible/
+.roles/
+
+# Secrets - never commit unencrypted
+*_vault.yml
+vault_pass*
+!vault_pass*.example
+
+# Editors / OS
+.DS_Store
+*.swp
+
+# Docs that get regenerated
+docs/generated/

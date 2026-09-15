@@ -1,0 +1,67 @@
+---
+- name: Stat the destination directory
+  ansible.builtin.stat:
+    path: "{{ iac_private_dest }}"
+  register: _iac_private_dest_stat
+
+- name: Abort when destination already exists
+  ansible.builtin.fail:
+    msg: >-
+      {{ iac_private_dest }} already exists.
+      Re-run with -e iac_private_scaffold_force=true to reuse it.
+  when: _iac_private_dest_stat.stat.exists and not iac_private_scaffold_force
+
+- name: Create base directory structure
+  ansible.builtin.file:
+    path: "{{ iac_private_dest }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - docs
+    - inventories
+
+- name: Render top-level repository files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ iac_private_dest }}/{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop:
+    - { src: gitignore.j2, dest: .gitignore }
+    - { src: README.md.j2, dest: README.md }
+    - { src: Makefile.j2, dest: Makefile }
+    - { src: docs_README.md.j2, dest: docs/README.md }
+
+- name: Scaffold DebOps-style inventories
+  ansible.builtin.include_tasks: debops_inventory.yml
+  loop: "{{ iac_private_scaffold_inventories | selectattr('type', 'equalto', 'debops') | list }}"
+  loop_control:
+    loop_var: inv
+    label: "{{ inv.name }}"
+
+- name: Scaffold vanilla ansible-playbook inventories
+  ansible.builtin.include_tasks: vanilla_inventory.yml
+  loop: "{{ iac_private_scaffold_inventories | selectattr('type', 'equalto', 'vanilla') | list }}"
+  loop_control:
+    loop_var: inv
+    label: "{{ inv.name }}"
+
+- name: Initialize git repository  # noqa: command-instead-of-module (no ansible.builtin module wraps plain `git init`)
+  ansible.builtin.command:
+    cmd: git init
+    chdir: "{{ iac_private_dest }}"
+    creates: "{{ iac_private_dest }}/.git"
+  when: iac_private_scaffold_git_init
+
+- name: Commit .gitignore as the first commit
+  ansible.builtin.command:
+    cmd: "{{ item }}"
+    chdir: "{{ iac_private_dest }}"
+  loop:
+    - git add .gitignore
+    - git commit -m "Add .gitignore"
+  when: iac_private_scaffold_git_init
+  register: _iac_private_first_commit
+  changed_when: "'nothing to commit' not in (_iac_private_first_commit.stdout | default(''))"
+  failed_when: >-
+    _iac_private_first_commit.rc != 0 and
+    'nothing to commit' not in (_iac_private_first_commit.stdout | default(''))

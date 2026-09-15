@@ -1,0 +1,26 @@
+---
+- name: "Create vanilla ansible-playbook inventory directories: {{ inv.name }}"
+  ansible.builtin.file:
+    path: "{{ iac_private_dest }}/inventories/{{ inv.name }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - group_vars/all
+    - host_vars
+
+- name: "Render vanilla ansible-playbook inventory files: {{ inv.name }}"
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ iac_private_dest }}/inventories/{{ inv.name }}/{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop:
+    - { src: vanilla/ansible.cfg.j2, dest: ansible.cfg }
+    - { src: vanilla/hosts.yml.j2, dest: hosts.yml }
+    - { src: vanilla/group_vars_all.yml.j2, dest: group_vars/all/vars.yml }
+    - { src: vanilla/README.md.j2, dest: README.md }
+
+- name: "Keep the empty host_vars directory in git: {{ inv.name }}"
+  ansible.builtin.copy:
+    dest: "{{ iac_private_dest }}/inventories/{{ inv.name }}/host_vars/.gitkeep"
+    content: ""
+    mode: "0644"
