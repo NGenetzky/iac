@@ -59,7 +59,7 @@ RUN git clone 'git://github.com/haraldkl/wemux.git' '/usr/local/src/wemux' \
     && cd '/usr/local/src/wemux' \
     && git checkout -b 'build' '0b9a16f82f07b923faf0013af4c23ebe1cc2a78b' \
     && install -d '/usr/local/man/man1' '/usr/local/share/doc/wemux' \
-    && make install \ 
+    && make install \
     && echo "host_list=(root ${USER_MAIN_NAME})" >> /usr/local/etc/wemux.conf
 
 ARG URL_KEYS="https://github.com/NGenetzky.keys"

@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y cmake \
     && wget https://github.com/libgit2/libgit2/archive/v${LIBGIT_VERSION}.tar.gz \
     && tar xzf v${LIBGIT_VERSION}.tar.gz \
     && cd libgit2-${LIBGIT_VERSION} \
-    && cmake . \ 
+    && cmake . \
     && make \
     && make install \
 # The python wrapper for libgit2
