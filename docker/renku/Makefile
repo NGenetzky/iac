@@ -22,7 +22,7 @@ stop: ## docker-compose stop # Stop running containers
 	docker-compose $@
 rm: ## docker-compose rm # Remove (running) containers
 	docker-compose $@
-ps: ## docker-compose ps # List containers 
+ps: ## docker-compose ps # List containers
 	docker-compose $@
 
 #
@@ -46,4 +46,3 @@ enter: ## Start bash login shell in existing container
 
 remove: rm ## Remove (running) containers
 clean: rm ## clean. Clean up
-

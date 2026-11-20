@@ -7,4 +7,3 @@ docker build --rm -t "${NAME}" \
     --build-arg "USER_MAIN_ID=$(id -u)" \
     --build-arg "USER_MAIN_NAME=$(id -un)" \
     ./
-

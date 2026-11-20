@@ -15,4 +15,3 @@ rm -rf \
 # Force cloud-init to run again.
 sudo cloud-init init
 sudo cloud-init modules
-

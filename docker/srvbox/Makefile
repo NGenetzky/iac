@@ -40,4 +40,3 @@ remove: ## Remove a (running) container
 
 remove-image-force: ## Remove the latest image (forced)
 	docker rmi -f $(IMAGE_NAME):$(VERSION)
-

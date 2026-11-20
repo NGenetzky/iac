@@ -15,4 +15,3 @@ fi
 
 cd "build/cloud_init"
 python3 -m http.server 3003
-

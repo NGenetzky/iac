@@ -12,4 +12,3 @@ debops "$@"
 # Only run netbase
 #-t TAGS, --tags TAGS  only run plays and tasks tagged with these values
 #debops --tags 'role::netbase'
-

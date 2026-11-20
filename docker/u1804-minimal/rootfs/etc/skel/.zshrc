@@ -46,4 +46,3 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 ################################################################################
 
 [[ -f "/usr/local/share/slimzsh/slim.zsh" ]] && source "/usr/local/share/slimzsh/slim.zsh"
-
